@@ -2,7 +2,6 @@ import requests
 import json
 import os
 import sys
-import urllib3
 
 #environmental variables
 imagetag=os.environ.get("IMAGETAG")
@@ -16,45 +15,28 @@ user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
 def requestToken():
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/sessions"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com//api/sessions"
     headers = {'Content-Type': 'application/json'}
-    data = {'user': {'userID': "administrator", 'password': "Trendmicr0!"}}
+    data = {'user': {'userID': user, 'password': password}}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
+
     return response.json()['token']
 
-def createWebHook():
-    requests.packages.urllib3.disable_warnings()
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/webhooks"
-    data = { "name": "Test WebHook descriptive string",
-              "hookURL": "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/",
-              "secret": "tHiSiSaBaDsEcReT",
-              "events": [
-                "scan-requested"
-              ]
-            }
-    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
-    try:
-        response = requests.request("POST", url, json=data, headers=headers, verify=False)
-        print (response.json())
-    except requests.exceptions.RequestException as e:
-        print (e)
-        sys.exit(1)
-
 def requestScan():
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com//api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "https://786395520305.dkr.ecr.us-west-2.amazonaws.com",
+        "registry": "<https://your.ecr.domain.amazonws.com>",
         "repository": "test",
-        "tag": "latest",
-        "credentials": {"aws": {"region": "us-east-1"}}},
+        "tag": imagetag+'-'+buildid,
+        "credentials": {"aws": {"region": "<region>"}}},
         "webhooks": [{
-        "hookURL": "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/webhooks/237b2c60-cea7-4686-ae2c-1842289e8624"}]}
+        "hookURL": "<your_smartcheck_webhook>"}]}
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
 
     try:
@@ -77,11 +59,10 @@ def sendToSlack(message):
         sys.exit(1)
 
 def requestReport():
-    requests.packages.urllib3.disable_warnings()
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans/"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com//api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken()}
     querystring = {"id": requestScan(),"expand":"none"}
 
@@ -93,6 +74,7 @@ def requestReport():
             sys.exit(1)
 
         status = response.json()['scans'][0]['status']
+
         if (status == "completed-no-findings"):
             break
 
@@ -134,6 +116,7 @@ def requestReport():
                 dataMalw = "Malware found: "+str(malware)
 
         message = dataVuln+dataMalw
+
     if (high <= int(high_t)) and (medium <= int(medium_t)) and (low <= int(low_t)) and (negligible <= int(negligible_t)) and (unknown <= int(unknown_t) and (malware < 1)):
         sys.stdout.write('1')
         message = "Image is clean and ready to be deployed!"
