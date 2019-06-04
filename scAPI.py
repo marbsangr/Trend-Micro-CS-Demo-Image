@@ -16,7 +16,7 @@ user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
 def requestToken():
-    url = "https://aec9f2fe57d9411e9a9b702cdb3880d0-1650846855.us-east-1.elb.amazonaws.com/api/sessions"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json'}
     data = {'user': {'userID': "administrator", 'password': "Trendmicr0!"}}
 
@@ -29,9 +29,9 @@ def requestToken():
 
 def createWebHook():
     requests.packages.urllib3.disable_warnings()
-    url = "https://aec9f2fe57d9411e9a9b702cdb3880d0-1650846855.us-east-1.elb.amazonaws.com/api/webhooks"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/webhooks"
     data = { "name": "Test WebHook descriptive string",
-              "hookURL": "https://aec9f2fe57d9411e9a9b702cdb3880d0-1650846855.us-east-1.elb.amazonaws.com/",
+              "hookURL": "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/",
               "secret": "tHiSiSaBaDsEcReT",
               "events": [
                 "scan-requested"
@@ -46,15 +46,15 @@ def createWebHook():
         sys.exit(1)
 
 def requestScan():
-    url = "https://aec9f2fe57d9411e9a9b702cdb3880d0-1650846855.us-east-1.elb.amazonaws.com/api/scans"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "https://786395520305.dkr.ecr.us-east-1.amazonaws.com",
-        "repository": "eicar",
+        "registry": "https://786395520305.dkr.ecr.us-west-2.amazonaws.com",
+        "repository": "test",
         "tag": "latest",
         "credentials": {"aws": {"region": "us-east-1"}}},
         "webhooks": [{
-        "hookURL": "https://aec9f2fe57d9411e9a9b702cdb3880d0-1650846855.us-east-1.elb.amazonaws.com/api/webhooks/237b2c60-cea7-4686-ae2c-1842289e8624"}]}
+        "hookURL": "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/webhooks/237b2c60-cea7-4686-ae2c-1842289e8624"}]}
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
 
     try:
@@ -81,7 +81,7 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://aec9f2fe57d9411e9a9b702cdb3880d0-1650846855.us-east-1.elb.amazonaws.com/api/scans/"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken()}
     querystring = {"id": requestScan(),"expand":"none"}
 
