@@ -26,7 +26,7 @@ agent any
      stage('Smartcheck') {
        steps {
          script {
-           $FLAG = sh([ script: 'python /home/scAPI.py', returnStdout: true ]).trim()
+           $FLAG = sh([ script: 'python scAPI.py', returnStdout: true ]).trim()
            if ($FLAG == '1') {
              sh 'docker tag test/keyfinding 786395520305.dkr.ecr.us-west-2.amazonaws.com/test/keyfinding'
              docker.withRegistry('https://786395520305.dkr.ecr.us-west-2.amazonws.com', 'ecr:us-west-2:xenia-ecr') {
