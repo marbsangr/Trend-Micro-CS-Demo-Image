@@ -11,6 +11,7 @@ high_t=os.environ.get("HIGH")
 medium_t=os.environ.get("MEDIUM")
 low_t=os.environ.get("LOW")
 negligible_t=os.environ.get("NEGLIGIBLE")
+malware_t=os.environ.get("MALWARE")
 unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
@@ -135,7 +136,7 @@ def requestReport():
 
         message = dataVuln+dataMalw
 
-    if (high <= int(high_t)) and (medium <= int(medium_t)) and (low <= int(low_t)) and (negligible <= int(negligible_t)) and (unknown <= int(unknown_t) and (malware < 1)):
+    if (high <= int(high_t)) and (medium <= int(medium_t)) and (low <= int(low_t)) and (negligible <= int(negligible_t)) and (unknown <= int(unknown_t) and (malware < malware_t)):
         sys.stdout.write('1')
         message = "Image is clean and ready to be deployed!"
 
