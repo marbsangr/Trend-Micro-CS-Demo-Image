@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import sys
+import urllib3
 
 #environmental variables
 imagetag=os.environ.get("IMAGETAG")
@@ -59,6 +60,7 @@ def sendToSlack(message):
         sys.exit(1)
 
 def requestReport():
+    requests.packages.urllib3.disable_warnings()
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
