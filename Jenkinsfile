@@ -9,7 +9,7 @@ agent any
    stage('Docker build') {
      steps {
        script {
-         docker.build('test')
+         docker.build('tomcat')
        }
 
      }
@@ -18,7 +18,7 @@ agent any
      steps {
        script {
          docker.withRegistry('https://786395520305.dkr.ecr.us-west-2.amazonws.com', 'ecr:us-west-2:xenia-ecr') {
-           docker.image('test/keyfindin').push(env.IMAGETAG+'-'+env.BUILD_ID)}
+           docker.image('tomcat').push(env.IMAGETAG+'-'+env.BUILD_ID)}
          }
 
        }
