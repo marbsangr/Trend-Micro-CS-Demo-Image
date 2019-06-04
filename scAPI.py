@@ -16,13 +16,12 @@ user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
 def requestToken():
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com//api/sessions"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
-    data = {'user': {'userID': user, 'password': password}}
+    data = {'user': {'userID': 'administrator', 'password': 'Trendmicr0!'}}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
-        print(response)
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -30,7 +29,7 @@ def requestToken():
     return response.json()['token']
 
 def requestScan():
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com//api/scans"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
         "registry": "<https://your.ecr.domain.amazonws.com>",
@@ -65,7 +64,7 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com//api/scans/"
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": requestScan(),"expand":"none"}
 
