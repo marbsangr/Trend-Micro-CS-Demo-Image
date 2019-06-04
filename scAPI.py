@@ -17,11 +17,12 @@ password=os.environ.get("PASSWORD")
 
 def requestToken():
     url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com//api/sessions"
-    headers = {'Content-Type': 'application/json'}
+    headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
     data = {'user': {'userID': user, 'password': password}}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
+        print(response)
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -38,7 +39,7 @@ def requestScan():
         "credentials": {"aws": {"region": "<region>"}}},
         "webhooks": [{
         "hookURL": "<your_smartcheck_webhook>"}]}
-    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
+    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
@@ -65,7 +66,7 @@ def requestReport():
     status='pending'
 
     url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com//api/scans/"
-    headers = {'Authorization': 'Bearer'+requestToken()}
+    headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": requestScan(),"expand":"none"}
 
     while status != "completed-with-findings":
