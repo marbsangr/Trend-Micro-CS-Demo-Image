@@ -32,20 +32,18 @@ def requestScan():
     url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "<https://your.ecr.domain.amazonws.com>",
-        "repository": "test",
-        "tag": imagetag+'-'+buildid,
-        "credentials": {"aws": {"region": "<region>"}}},
+        "registry": "https://786395520305.dkr.ecr.us-west-2.amazonaws.com",
+        "repository": "test/apachestruts",
+        "tag": 'latest',
+        "credentials": {"aws": {"region": "us-west-2"}}},
         "webhooks": [{
-        "hookURL": "<your_smartcheck_webhook>"}]}
+        "hookURL": createWebHook()}]}
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
-
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
-
     return response.json()['id']
 
 def sendToSlack(message):
@@ -58,6 +56,24 @@ def sendToSlack(message):
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
+
+def createWebHook():
+    requests.packages.urllib3.disable_warnings()
+    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/webhooks"
+    data = { "name": "Test WebHook descriptive string",
+              "hookURL": "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/",
+              "secret": "tHiSiSaBaDsEcReT",
+              "events": [
+                "scan-requested"
+              ]
+            }
+    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
+    try:
+        response = requests.request("POST", url, json=data, headers=headers, verify=False)
+    except requests.exceptions.RequestException as e:
+        print (e)
+        sys.exit(1)
+    return response.json()['hookUrl']
 
 def requestReport():
     requests.packages.urllib3.disable_warnings()
