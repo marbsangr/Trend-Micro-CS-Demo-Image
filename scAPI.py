@@ -48,7 +48,7 @@ def requestScan():
 
 def sendToSlack(message):
     url = 'https://hooks.slack.com/services/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'
-    data = {"text": "!!! Scan results !!! \n"+"Image: "+imagetag+'-'+buildid+"\n"+message}
+    data = {"text": "!!! Scan results !!! \n"+"Image: (test/apachestruts) "+imagetag+'-'+buildid+"\n"+message}
     headers = {'Content-Type': 'application/json'}
 
     try:
