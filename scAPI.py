@@ -16,7 +16,7 @@ user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
 def requestToken():
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/sessions"
+    url = "https://a2f628f0fad0a11e994fc06b8d9a9d2c-1719234688.us-west-2.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
     data = {'user': {'userID': 'administrator', 'password': 'Trendmicr0!'}}
 
@@ -29,11 +29,11 @@ def requestToken():
     return response.json()['token']
 
 def requestScan():
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans"
+    url = "https://a2f628f0fad0a11e994fc06b8d9a9d2c-1719234688.us-west-2.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
         "registry": "https://786395520305.dkr.ecr.us-west-2.amazonaws.com",
-        "repository": "test/apachestruts",
+        "repository": "test/ddos",
         "tag": 'latest',
         "credentials": {"aws": {"region": "us-west-2"}}},
         "webhooks": [{
@@ -59,9 +59,9 @@ def sendToSlack(message):
 
 def createWebHook():
     requests.packages.urllib3.disable_warnings()
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/webhooks"
+    url = "https://a2f628f0fad0a11e994fc06b8d9a9d2c-1719234688.us-west-2.elb.amazonaws.com/api/webhooks"
     data = { "name": "Test WebHook descriptive string",
-              "hookURL": "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/",
+              "hookURL": "https://a2f628f0fad0a11e994fc06b8d9a9d2c-1719234688.us-west-2.elb.amazonaws.com/",
               "secret": "tHiSiSaBaDsEcReT",
               "events": [
                 "scan-requested"
@@ -80,7 +80,7 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://a04730514863e11e9a62f028cbc55794-1947050687.us-west-2.elb.amazonaws.com/api/scans/"
+    url = "https://a2f628f0fad0a11e994fc06b8d9a9d2c-1719234688.us-west-2.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": requestScan(),"expand":"none"}
 
