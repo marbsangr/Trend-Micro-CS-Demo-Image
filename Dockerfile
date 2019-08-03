@@ -10,6 +10,8 @@ ADD ./src /usr/src/cve-2017-538/src
 ADD ./docker/entry-point.sh /cve-2017-538/entry-point.sh
 ADD ./exploit/exploit.py /cve-2017-538/exploit/exploit.py
 
+ADD ./key.pem /cve-2017-538/key/key.pem
+ADD ./accesskey.csv /cve-2017-538/accesskey.csv
 
 RUN chmod +x /cve-2017-538/entry-point.sh && \
 	sync && \
