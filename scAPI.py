@@ -5,6 +5,7 @@ import sys
 import urllib3
 
 #environmental variables
+"""
 imagetag=os.environ.get("IMAGETAG")
 buildid=os.environ.get("BUILD_ID")
 high_t=os.environ.get("HIGH")
@@ -14,6 +15,16 @@ negligible_t=os.environ.get("NEGLIGIBLE")
 unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
+"""
+imagetag='apache'
+buildid='12'
+high_t=1
+medium_t=5
+low_t=1
+negligible_t=10
+unknown_t=5
+user='administrator'
+password='Trendmicr0!'
 
 def requestToken():
     url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/sessions"
@@ -75,6 +86,11 @@ def createWebHook():
         sys.exit(1)
     return response.json()['hookUrl']
 
+def writeToJSONFile(path, fileName, data):
+    filePathNameWExt = './' + path + '/' + fileName + '.json'
+    with open(filePathNameWExt, 'w') as fp:
+        json.dump(data, fp)
+
 def requestReport():
     requests.packages.urllib3.disable_warnings()
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
@@ -82,7 +98,7 @@ def requestReport():
 
     url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
-    querystring = {"id": requestScan(),"expand":"none"}
+    querystring = {"id": requestScan(),"expand":"all"}
 
     while status != "completed-with-findings":
         try:
@@ -101,7 +117,8 @@ def requestReport():
             sys.exit(1)
 
     data = response.json()
-
+    print(data)
+    writeToJSONFile('./','datatotal',data)
     if(status == "completed-with-findings" ):
         findings = data['scans'][0]['findings']
         vulnerabilities = findings['vulnerabilities']
