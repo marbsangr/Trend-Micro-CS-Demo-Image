@@ -31,7 +31,7 @@ layers=[]
 def requestToken():
     url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
-    data = {'user': {'userID': 'administrator', 'password': 'Trendmicr0!'}}
+    data = {'user': {'userID': 'administrator', 'password': 'Piloto01..'}}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
@@ -45,8 +45,8 @@ def requestScan():
     url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "https://786395520305.dkr.ecr.us-east-2.amazonaws.com",
-        "repository": "test",
+        "registry": "https://946007956850.dkr.ecr.us-west-2.amazonaws.com/bsecure",
+        "repository": "bsecure",
         "tag": 'latest',
         "credentials": {"aws": {"region": "us-east-2"}}},
         "webhooks": [{
