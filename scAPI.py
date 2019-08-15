@@ -26,6 +26,8 @@ unknown_t=5
 user='administrator'
 password='Trendmicr0!'
 
+layers=[]
+
 def requestToken():
     url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
@@ -88,8 +90,52 @@ def createWebHook():
 
 def writeToJSONFile(path, fileName, data):
     filePathNameWExt = './' + path + '/' + fileName + '.json'
-    with open(filePathNameWExt, 'w') as fp:
+    with open(filePathNameWExt, 'w+') as fp:
         json.dump(data, fp)
+
+def getVulnLayers(scanId):
+    print(scanId)
+    k=0
+    dataVulnUn = ""
+    message = ""
+    requests.packages.urllib3.disable_warnings()
+    url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/scans/"
+    headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
+    querystring = {"id": scanId,"expand":"all"}
+    try:
+        response = requests.request("GET", url, headers=headers, params=querystring, verify=False)
+        lastScan = len(response.json()['scans'])-1
+        dataTmp = response.json()['scans'][lastScan]['details']['results'];
+
+        writeToJSONFile('./','datatotal',dataTmp)
+    except requests.exceptions.RequestException as e:
+        print (e)
+        sys.exit(1)
+    for dataT in dataTmp:
+        writeToJSONFile('./','datatotal',dataT['findings']['vulnerabilities']['total'])
+        if len(dataT['findings']['vulnerabilities']['total']) > 0:
+                layerID = dataT['id']
+                url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/scans/"+scanId+"/layers/"+layerID+"/vulnerabilities/"
+                headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
+                querystring = {"expand":"all"}
+                try:
+                    response = requests.request("GET", url, headers=headers, params=querystring, verify=False)
+                    dataVulnUn = ""
+                    vulnerabilitiesForLayer=response.json()['vulnerabilities']
+                    if(len(response.json()['vulnerabilities']) > 0):
+                        print(len(response.json()['vulnerabilities']))
+                        vulnerabilities = response.json()['vulnerabilities'][0]['vulnerabilities']
+                        message += response.json()['vulnerabilities'][0]['name'] + ": \n"
+                        for value in vulnerabilities:
+                            if value['severity'] == 'high':
+                                k+=1
+                                dataVulnUn += value['name'] + ".\n"
+                                message += dataVulnUn +";"
+                                #writeToJSONFile('./','datatotal {}'.format(k),response.json())
+                    sendToSlack(message)
+                except requests.exceptions.RequestException as e:
+                    print (e)
+                    sys.exit(1)
 
 def requestReport():
     requests.packages.urllib3.disable_warnings()
@@ -117,12 +163,14 @@ def requestReport():
             sys.exit(1)
 
     data = response.json()
-    print(data)
-    writeToJSONFile('./','datatotal',data)
+    print(len(data['scans'][0]['details']['results']))
+    getVulnLayers(data['scans'][0]['details']['results'],data['scans'][0]['id'])
+
     if(status == "completed-with-findings" ):
         findings = data['scans'][0]['findings']
         vulnerabilities = findings['vulnerabilities']
-
+        #print(data['scans'][0]['details']['results'][0])
+        #layers.append(data['scans'][0]['details']['results'][0])
         dataVuln = "Vulnerabilities found: \n"
         dataMalw = ""
 
@@ -158,4 +206,4 @@ def requestReport():
 
     sendToSlack(message)
 
-requestReport()
+getVulnLayers('002653a1-0406-495e-8b11-7eb25fa20c38')
