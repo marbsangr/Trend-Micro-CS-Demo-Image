@@ -29,9 +29,9 @@ password='Trendmicr0!'
 layers=[]
 
 def requestToken():
-    url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/sessions"
+    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
-    data = {'user': {'userID': 'administrator', 'password': 'Piloto01..'}}
+    data = {'user': {'userID': 'administrator', 'password': 'Trendmicr0!'}}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
@@ -42,11 +42,11 @@ def requestToken():
     return response.json()['token']
 
 def requestScan():
-    url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/scans"
+    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "https://946007956850.dkr.ecr.us-west-2.amazonaws.com/bsecure",
-        "repository": "bsecure",
+        "registry": "https://946007956850.dkr.ecr.us-west-2.amazonaws.com/test/apachestruts",
+        "repository": "test/apachestruts",
         "tag": 'latest',
         "credentials": {"aws": {"region": "us-east-2"}}},
         "webhooks": [{
@@ -72,9 +72,9 @@ def sendToSlack(message):
 
 def createWebHook():
     requests.packages.urllib3.disable_warnings()
-    url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/webhooks"
+    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/webhooks"
     data = { "name": "Test WebHook descriptive string",
-              "hookURL": "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/",
+              "hookURL": "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/",
               "secret": "tHiSiSaBaDsEcReT",
               "events": [
                 "scan-requested"
@@ -99,7 +99,7 @@ def getVulnLayers(scanId):
     dataVulnUn = ""
     message = ""
     requests.packages.urllib3.disable_warnings()
-    url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/scans/"
+    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": scanId,"expand":"all"}
     try:
@@ -115,7 +115,7 @@ def getVulnLayers(scanId):
         writeToJSONFile('./','datatotal',dataT['findings']['vulnerabilities']['total'])
         if len(dataT['findings']['vulnerabilities']['total']) > 0:
                 layerID = dataT['id']
-                url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/scans/"+scanId+"/layers/"+layerID+"/vulnerabilities/"
+                url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/scans/"+scanId+"/layers/"+layerID+"/vulnerabilities/"
                 headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
                 querystring = {"expand":"all"}
                 try:
@@ -142,7 +142,7 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://af827c5f3b55511e999e702493d213d9-1499995079.us-east-2.elb.amazonaws.com/api/scans/"
+    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": requestScan(),"expand":"all"}
 
