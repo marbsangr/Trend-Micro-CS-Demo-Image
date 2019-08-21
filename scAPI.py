@@ -18,7 +18,7 @@ password=os.environ.get("PASSWORD")
 def requestToken():
     url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
-    data = {'user': {'userID': 'administrator', 'password': 'Trendmicr0!'}}
+    data = {'user': {'userID': 'administrator', 'password': 'Piloto01..'}}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
