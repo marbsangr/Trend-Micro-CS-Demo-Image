@@ -16,7 +16,7 @@ user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
 def requestToken():
-    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/sessions"
+    url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
     data = {'user': {'userID': 'administrator', 'password': 'Trendmicr0!'}}
 
@@ -29,13 +29,13 @@ def requestToken():
     return response.json()['token']
 
 def requestScan():
-    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/scans"
+    url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
         "registry": "https://786395520305.dkr.ecr.us-east-2.amazonaws.com",
-        "repository": "test/apachestruts",
+        "repository": "bsecure",
         "tag": 'latest',
-        "credentials": {"aws": {"region": "us-east-2"}}},
+        "credentials": {"aws": {"region": "us-west-2"}}},
         "webhooks": [{
         "hookURL": createWebHook()}]}
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
@@ -48,7 +48,7 @@ def requestScan():
 
 def sendToSlack(message):
     url = 'https://hooks.slack.com/services/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'
-    data = {"text": "!!! Scan results !!! \n"+"Image: (test/apachestruts) "+imagetag+'-'+buildid+"\n"+message}
+    data = {"text": "!!! Scan results !!! \n"+"Image: (bsecure) "+imagetag+'-'+buildid+"\n"+message}
     headers = {'Content-Type': 'application/json'}
 
     try:
@@ -59,9 +59,9 @@ def sendToSlack(message):
 
 def createWebHook():
     requests.packages.urllib3.disable_warnings()
-    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/webhooks"
+    url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/webhooks"
     data = { "name": "Test WebHook descriptive string",
-              "hookURL": "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/",
+              "hookURL": "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/",
               "secret": "tHiSiSaBaDsEcReT",
               "events": [
                 "scan-requested"
@@ -80,7 +80,7 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://a0def78f6bfa011e99b471244930895f-1322482254.us-east-1.elb.amazonaws.com/api/scans/"
+    url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": requestScan(),"expand":"none"}
 
