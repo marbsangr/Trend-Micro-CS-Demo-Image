@@ -33,7 +33,7 @@ def requestScan():
     data = {"source": {
         "type": "docker",
         "registry": "https://786395520305.dkr.ecr.us-east-2.amazonaws.com",
-        "repository": "bsecure",
+        "repository": "test/apachestruts",
         "tag": 'latest',
         "credentials": {"aws": {"region": "us-east-1"}}},
         "webhooks": [{
@@ -48,7 +48,7 @@ def requestScan():
 
 def sendToSlack(message):
     url = 'https://hooks.slack.com/services/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'
-    data = {"text": "!!! Scan results !!! \n"+"Image: (bsecure) "+imagetag+'-'+buildid+"\n"+message}
+    data = {"text": "!!! Scan results !!! \n"+"Image: "+imagetag+'-'+buildid+"\n"+message}
     headers = {'Content-Type': 'application/json'}
 
     try:
