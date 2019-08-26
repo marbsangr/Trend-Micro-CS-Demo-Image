@@ -16,9 +16,9 @@ user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
 def requestToken():
-    url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/sessions"
+    url = "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
-    data = {'user': {'userID': 'administrator', 'password': 'Piloto01..'}}
+    data = {'user': {'userID': 'administrator', 'password': 'Trendmicr0!'}}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
@@ -29,7 +29,7 @@ def requestToken():
     return response.json()['token']
 
 def requestScan():
-    url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/scans"
+    url = "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
         "registry": "https://786395520305.dkr.ecr.us-east-2.amazonaws.com",
@@ -47,7 +47,7 @@ def requestScan():
     return response.json()['id']
 
 def sendToSlack(message):
-    url = 'https://hooks.slack.com/services/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'
+    url = 'https://hooks.slack.com/services/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'
     data = {"text": "!!! Scan results !!! \n"+"Image: (bsecure) "+imagetag+'-'+buildid+"\n"+message}
     headers = {'Content-Type': 'application/json'}
 
@@ -59,9 +59,9 @@ def sendToSlack(message):
 
 def createWebHook():
     requests.packages.urllib3.disable_warnings()
-    url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/webhooks"
+    url = "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/api/webhooks"
     data = { "name": "Test WebHook descriptive string",
-              "hookURL": "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/",
+              "hookURL": "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/",
               "secret": "tHiSiSaBaDsEcReT",
               "events": [
                 "scan-requested"
@@ -80,7 +80,7 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://a562e5d8eb3e011e9a4310a5f335720b-1290954494.us-west-2.elb.amazonaws.com/api/scans/"
+    url = "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": requestScan(),"expand":"none"}
 
