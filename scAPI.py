@@ -35,7 +35,7 @@ def requestScan():
         "registry": "https://786395520305.dkr.ecr.us-east-2.amazonaws.com",
         "repository": "bsecure",
         "tag": 'latest',
-        "credentials": {"aws": {"region": "us-west-2"}}},
+        "credentials": {"aws": {"region": "us-east-1"}}},
         "webhooks": [{
         "hookURL": createWebHook()}]}
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
