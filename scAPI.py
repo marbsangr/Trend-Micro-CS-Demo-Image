@@ -49,17 +49,19 @@ def requestScan():
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
+        print (response.json())
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
     return response.json()['id']
 
 def sendToSlack(message, data):
-    url = 'https://hooks.slack.com/services/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'
+    url = 'https://hooks.slack.com/services/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'
     headers = {'Content-Type': 'application/json'}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers)
+        print (response.json())
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -77,6 +79,7 @@ def createWebHook():
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
+        print (response.json())
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -93,8 +96,8 @@ def requestReport():
 
     while status != "completed-with-findings":
         try:
-            print("requestScan")
             response=requests.request("GET", url, headers=headers,params=querystring,verify=False)
+            print (response.json())
         except requests.exceptions.RequestException as e:
             print (e)
             sys.exit(1)
