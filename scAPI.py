@@ -55,7 +55,7 @@ def requestScan():
     return response.json()['id']
 
 def sendToSlack(message, data):
-    url = 'https://hooks.slack.com/services/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'
+    url = 'https://hooks.slack.com/services/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'
     headers = {'Content-Type': 'application/json'}
 
     try:
