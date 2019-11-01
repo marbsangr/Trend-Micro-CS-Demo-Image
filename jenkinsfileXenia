@@ -16,7 +16,7 @@ agent any
    stage('ECR push') {
      steps {
        script {
-         docker.withRegistry('https://786395520305.dkr.ecr.us-east-1.amazonaws.com/', 'ecr:us-east-1:xenia-ecr') {
+         docker.withRegistry('https://786395520305.dkr.ecr.us-east-2.amazonaws.com/', 'ecr:us-east-2:xenia-ecr') {
            docker.image('test/apachestruts').push()}
          }
 
@@ -27,9 +27,11 @@ agent any
          script {
            $FLAG = sh([ script: 'python scAPI.py', returnStdout: true ]).trim()
            if ($FLAG == '1') {
-             sh 'docker tag test/keyfinding 786395520305.dkr.ecr.us-east-1.amazonaws.com/test/keyfinding'
-             docker.withRegistry('https://786395520305.dkr.ecr.us-east-1.amazonws.com', 'ecr:us-east-1:xenia-ecr') {
-               docker.image('786395520305.dkr.ecr.us-east-1.amazonaws.com/test/keyfinding').push(env.IMAGETAG+'-'+env.BUILD_ID) }
+             sh 'docker tag test/keyfinding 786395520305.dkr.ecr.us-east-2.amazonaws.com/test/apachestruts'
+             docker.withRegistry('https://786395520305.dkr.ecr.us-east-2.amazonws.com', 'ecr:us-east-2:xenia-ecr') {
+               docker.image('786395520305.dkr.ecr.us-east-2.amazonaws.com/test/apachestruts').push(env.IMAGETAG+'-'+env.BUILD_ID) }
+             } else {
+
              }
                sh 'docker rmi $(docker images -q) -f 2> /dev/null'
              }
@@ -38,8 +40,8 @@ agent any
          }
        }
        environment {
-         IMAGETAG = 'tomcat'
-         HIGH = '1'
+         IMAGETAG = 'Apache'
+         HIGH = '16'
          MEDIUM = '5'
          LOW = '5'
          NEGLIGIBLE = '5'

@@ -15,13 +15,20 @@ unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
+smartCheckLB = "ab055b05acc0a11e99eac06fa20ef34b-227386894.us-east-2.elb.amazonaws.com"
+userSC = "Administrator"
+passSC = "Trendmicr0!"
+
 def requestToken():
-    url = "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/api/sessions"
-    headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01'}
-    data = {'user': {'userID': 'administrator', 'password': 'Trendmicr0!'}}
+    """ Request Session Token this is necesary for User Autentication """
+
+    url = "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/api/sessions"
+    headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01' }
+    data = {'user': {'userID': "administrator", 'password': "Trendmicr0!" }}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
+        print (response.json())
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -29,13 +36,13 @@ def requestToken():
     return response.json()['token']
 
 def requestScan():
-    url = "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/api/scans"
+    url = "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/api/scans"
     data = {"source": {
         "type": "docker",
         "registry": "https://786395520305.dkr.ecr.us-east-2.amazonaws.com",
         "repository": "test/apachestruts",
         "tag": 'latest',
-        "credentials": {"aws": {"region": "us-east-1"}}},
+        "credentials": {"aws": {"region": "us-east-2"}}},
         "webhooks": [{
         "hookURL": createWebHook()}]}
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
@@ -46,9 +53,8 @@ def requestScan():
         sys.exit(1)
     return response.json()['id']
 
-def sendToSlack(message):
+def sendToSlack(message, data):
     url = 'https://hooks.slack.com/services/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'
-    data = {"text": "!!! Scan results !!! \n"+"Image: "+imagetag+'-'+buildid+"\n"+message}
     headers = {'Content-Type': 'application/json'}
 
     try:
@@ -59,9 +65,9 @@ def sendToSlack(message):
 
 def createWebHook():
     requests.packages.urllib3.disable_warnings()
-    url = "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/api/webhooks"
+    url = "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/api/webhooks"
     data = { "name": "Test WebHook descriptive string",
-              "hookURL": "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/",
+              "hookURL": "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/",
               "secret": "tHiSiSaBaDsEcReT",
               "events": [
                 "scan-requested"
@@ -80,12 +86,13 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://a0b5c18ffc7f811e9bba40a9706f13aa-1784155515.us-east-2.elb.amazonaws.com/api/scans/"
+    url = "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": requestScan(),"expand":"none"}
 
     while status != "completed-with-findings":
         try:
+            print("requestScan")
             response=requests.request("GET", url, headers=headers,params=querystring,verify=False)
         except requests.exceptions.RequestException as e:
             print (e)
@@ -136,9 +143,11 @@ def requestReport():
         message = dataVuln+dataMalw
 
     if (high <= int(high_t)) and (medium <= int(medium_t)) and (low <= int(low_t)) and (negligible <= int(negligible_t)) and (unknown <= int(unknown_t) and (malware < 1)):
-        sys.stdout.write('0')
+        sys.stdout.write('1')
         message = "Image is clean and ready to be deployed!"
+
+    data = {"text": "!!! Scan results !!! \n"+"Image: "+imagetag+'-'+buildid+"\n"+message}
 
     sendToSlack(message)
 
-requestReport()
+requestToken()
