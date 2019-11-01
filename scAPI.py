@@ -150,4 +150,4 @@ def requestReport():
 
     sendToSlack(message)
 
-requestToken()
+requestScan()
