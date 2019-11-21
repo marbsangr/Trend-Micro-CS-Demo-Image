@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import urllib3
+import curlify
 
 #environmental variables
 imagetag=os.environ.get("IMAGETAG")
@@ -16,28 +17,29 @@ unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
-smartCheckLB = "ab055b05acc0a11e99eac06fa20ef34b-227386894.us-east-2.elb.amazonaws.com"
+smartCheckLB = "a1c448327096a11ea91b50a9092bc8ce-1385663073.us-east-2.elb.amazonaws.com"
 userSC = "Administrator"
 passSC = "Trendmicr0!"
 
 def requestToken():
+
     """ Request Session Token this is necesary for User Autentication """
 
-    url = "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/api/sessions"
+    url = "https://"+smartCheckLB+"/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01' }
-    data = {'user': {'userID': "administrator", 'password': "Trendmicr0!" }}
+    data = {'user': {'userID': "administrator", 'password': "93Xeniat." }}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
-        print (response.json())
+        print(curlify.to_curl(response.request)) 
+        print(requests.request("POST", url, json=data, headers=headers, verify=False))
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
-
     return response.json()['token']
 
 def requestScan():
-    url = "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/api/scans"
+    url = "https://"+smartCheckLB+"/api/scans"
     data = {"source": {
         "type": "docker",
         "registry": "https://786395520305.dkr.ecr.us-east-2.amazonaws.com",
@@ -49,7 +51,6 @@ def requestScan():
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
-        print (response.json())
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -61,16 +62,15 @@ def sendToSlack(message, data):
 
     try:
         response = requests.request("POST", url, json=data, headers=headers)
-        print (response.json())
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
 
 def createWebHook():
     requests.packages.urllib3.disable_warnings()
-    url = "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/api/webhooks"
+    url = "https://"+smartCheckLB+"/api/webhooks"
     data = { "name": "Test WebHook descriptive string",
-              "hookURL": "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/",
+              "hookURL": "https://"+smartCheckLB+"/",
               "secret": "tHiSiSaBaDsEcReT",
               "events": [
                 "scan-requested"
@@ -79,7 +79,6 @@ def createWebHook():
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
-        print (response.json())
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -90,14 +89,13 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
-    url = "https://a36a81424fc4011e9a7a6062c7232cca-1571883383.us-east-2.elb.amazonaws.com/api/scans/"
+    url = "https://"+smartCheckLB+"/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"id": requestScan(),"expand":"none"}
 
     while status != "completed-with-findings":
         try:
             response=requests.request("GET", url, headers=headers,params=querystring,verify=False)
-            print (response.json())
         except requests.exceptions.RequestException as e:
             print (e)
             sys.exit(1)
@@ -154,4 +152,4 @@ def requestReport():
 
     sendToSlack(message)
 
-requestScan()
+requestToken()
