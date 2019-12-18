@@ -103,7 +103,7 @@ def createWebHook():
     return response.json()['hookUrl']
 
 def requestReport():
-    requests.packages.urllib3.disable_warnings()
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
