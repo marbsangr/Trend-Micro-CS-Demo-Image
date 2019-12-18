@@ -17,12 +17,12 @@ unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
-smartCheckLB = "a1c448327096a11ea91b50a9092bc8ce-1385663073.us-east-2.elb.amazonaws.com"
+smartCheckLB = "a077518160c8911ea98570a8b28c079c-330136238.us-east-2.elb.amazonaws.com"
 userSC = "Administrator"
 passSC = "Trendmicr0!"
 
 def requestToken():
-
+    requests.packages.urllib3.disable_warnings()
     """ Request Session Token this is necesary for User Autentication """
 
     url = "https://"+smartCheckLB+"/api/sessions"
@@ -31,14 +31,31 @@ def requestToken():
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
-        print(curlify.to_curl(response.request)) 
+        print(curlify.to_curl(response.request))
         print(requests.request("POST", url, json=data, headers=headers, verify=False))
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
     return response.json()['token']
 
+def listSessions():
+    requests.packages.urllib3.disable_warnings()
+    """ Request Session Token this is necesary for User Autentication """
+
+    url = "https://"+smartCheckLB+"/api/sessions"
+    headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01' }
+    data = {'user': {'userID': "administrator", 'password': "93Xeniat." },'expand': 'all', 'limit':'25'}
+
+    try:
+        response = requests.request("POST", url, json=data, headers=headers, verify=False)
+        print(curlify.to_curl(response.request))
+        print(response.json())
+    except requests.exceptions.RequestException as e:
+        print (e)
+        sys.exit(1)
+
 def requestScan():
+    requests.packages.urllib3.disable_warnings()
     url = "https://"+smartCheckLB+"/api/scans"
     data = {"source": {
         "type": "docker",
@@ -51,6 +68,7 @@ def requestScan():
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
+        print(curlify.to_curl(response.request))
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -152,4 +170,4 @@ def requestReport():
 
     sendToSlack(message)
 
-requestToken()
+listSessions()
