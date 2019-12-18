@@ -170,4 +170,4 @@ def requestReport():
 
     sendToSlack(message)
 
-listScan()
+requestReport()
