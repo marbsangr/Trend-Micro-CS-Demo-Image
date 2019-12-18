@@ -68,7 +68,7 @@ def listScan():
         obj = open("test.txt", "wb")
         obj.write(json.dumps(data))
         obj.close()
-        print (json.dumps(data[]))
+        print (json.dumps(data))
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
