@@ -17,7 +17,7 @@ unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
-smartCheckLB = "a3af00d66210111eaa28702eca3a571f-192601.us-east-2.elb.amazonaws.com"
+smartCheckLB = "a3c92b9f4215e11eaa3c20a66c76eb3b-269950718.us-east-2.elb.amazonaws.com"
 userSC = "Administrator"
 passSC = "93Xeniat."
 
