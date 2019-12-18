@@ -19,7 +19,7 @@ password=os.environ.get("PASSWORD")
 
 smartCheckLB = "a3af00d66210111eaa28702eca3a571f-192601.us-east-2.elb.amazonaws.com"
 userSC = "Administrator"
-passSC = "Trendmicr0!"
+passSC = "93Xeniat."
 
 def requestToken():
 
@@ -167,7 +167,5 @@ def requestReport():
         message = "Image is clean and ready to be deployed!"
 
     data = {"text": "!!! Scan results !!! \n"+"Image: "+imagetag+'-'+buildid+"\n"+message}
-
-    sendToSlack(message)
 
 requestReport()
