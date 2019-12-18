@@ -17,7 +17,7 @@ unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
-smartCheckLB = "a1c448327096a11ea91b50a9092bc8ce-1385663073.us-east-2.elb.amazonaws.com"
+smartCheckLB = "a3af00d66210111eaa28702eca3a571f-192601.us-east-2.elb.amazonaws.com"
 userSC = "Administrator"
 passSC = "Trendmicr0!"
 
@@ -31,8 +31,8 @@ def requestToken():
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
-        print(curlify.to_curl(response.request)) 
-        print(requests.request("POST", url, json=data, headers=headers, verify=False))
+        """print(curlify.to_curl(response.request))
+        print(requests.request("POST", url, json=data, headers=headers, verify=False))"""
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
@@ -55,6 +55,24 @@ def requestScan():
         print (e)
         sys.exit(1)
     return response.json()['id']
+
+def listScan():
+    requests.packages.urllib3.disable_warnings()
+    url = "https://"+smartCheckLB+"/api/scans/"
+    headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
+    querystring = {"expand":"all", "status":"completed-with-findings"}
+
+    try:
+        response=requests.request("GET", url, headers=headers,params=querystring,verify=False)
+        data = response.json()
+        obj = open("test.txt", "wb")
+        obj.write(json.dumps(data))
+        obj.close()
+        print (json.dumps(data[]))
+    except requests.exceptions.RequestException as e:
+        print (e)
+        sys.exit(1)
+
 
 def sendToSlack(message, data):
     url = 'https://hooks.slack.com/services/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'
@@ -152,4 +170,4 @@ def requestReport():
 
     sendToSlack(message)
 
-requestToken()
+listScan()
