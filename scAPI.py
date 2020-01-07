@@ -17,9 +17,9 @@ unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 
-smartCheckLB = "a077518160c8911ea98570a8b28c079c-330136238.us-east-2.elb.amazonaws.com"
+smartCheckLB = ""
 userSC = "Administrator"
-passSC = "Trendmicr0!"
+passSC = "93Xeniat."
 
 def requestToken():
     requests.packages.urllib3.disable_warnings()
@@ -74,6 +74,24 @@ def requestScan():
         sys.exit(1)
     return response.json()['id']
 
+def listScan():
+    requests.packages.urllib3.disable_warnings()
+    url = "https://"+smartCheckLB+"/api/scans/"
+    headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
+    querystring = {"expand":"all", "status":"completed-with-findings"}
+
+    try:
+        response=requests.request("GET", url, headers=headers,params=querystring,verify=False)
+        data = response.json()
+        obj = open("test.txt", "wb")
+        obj.write(json.dumps(data))
+        obj.close()
+        print (json.dumps(data))
+    except requests.exceptions.RequestException as e:
+        print (e)
+        sys.exit(1)
+
+
 def sendToSlack(message, data):
     url = 'https://hooks.slack.com/services/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'
     headers = {'Content-Type': 'application/json'}
@@ -103,7 +121,7 @@ def createWebHook():
     return response.json()['hookUrl']
 
 def requestReport():
-    requests.packages.urllib3.disable_warnings()
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
 
