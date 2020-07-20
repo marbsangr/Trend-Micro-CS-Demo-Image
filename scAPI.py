@@ -59,7 +59,7 @@ def requestScan():
     url = "https://"+smartCheckLB+"/api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "https://786395520305.dkr.ecr.us-east-2.amazonaws.com",
+        "registry": "",
         "repository": "test/apachestruts",
         "tag": 'latest',
         "credentials": {"aws": {"region": "us-east-2"}}},
