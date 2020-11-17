@@ -1,0 +1,34 @@
+# Docker
+# Build a Docker image 
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        tags: |
+          $(tag)
+    - task: PythonScript@0
+      inputs:
+        scriptSource: 'filePath'
+        scriptPath: 'https://github.com/deep-security/smartcheck-samples/blob/master/py-scan/scan.py'
+        arguments: '--smartcheck-host https://a5b0d4ab38a9f4f5 846753579733.dkr.ecr.us-east-1.amazonaws.com/xeniarepo:node-snykin --smartcheck-password Arathor86:; 8a27d9ef0de5a01f-219406413.us-east-2.elb.amazonaws.com/ --smartcheck-user administrator --insecure-skip-tls-verify'
