@@ -29,6 +29,6 @@ stages:
           $(tag)
     - task: PythonScript@0
       inputs:
-        scriptSource: 'inline'
+        scriptSource: 'filePath'
         scriptPath: 'https://github.com/deep-security/smartcheck-samples/blob/master/py-scan/scan.py'
         arguments: '--smartcheck-host https://a5b0d4ab38a9f4f5 846753579733.dkr.ecr.us-east-1.amazonaws.com/xeniarepo:node-snykin --smartcheck-password Arathor86:; 8a27d9ef0de5a01f-219406413.us-east-2.elb.amazonaws.com/ --smartcheck-user administrator --insecure-skip-tls-verify'
