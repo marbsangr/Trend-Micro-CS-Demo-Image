@@ -238,7 +238,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
             for value in findings:
                 if value == 'malware':
-                    malware = findings['malware']
+                    malware = findings[0]['malware']
                     dataMalw = "Malware found: "+str(malware)
 
             message ="id:"+find["id"]+"\n"+dataVuln+dataMalw
