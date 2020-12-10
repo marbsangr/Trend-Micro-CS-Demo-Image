@@ -236,7 +236,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
             message ="id:"+find["id"]+"\n"+dataVuln+dataMalw
             detailsFinfings = scan["details"]['results']
-            completeMessage="\n"+message
+            completeMessage+="\n"+message
             print("***********************COMPLETE FINDINGS**********************************")
             print(completeMessage)
             print("**************************************************************************")
