@@ -255,8 +255,12 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             print(completeMessage)
             print("**************************************************************************")
                 
-        data = {"title": "!!! Trend Micro - Smart Check Scan results !!!",
-        "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\n Details \n"+completeMessage+"</pre>"}
+        data = {
+            "title": "!!! Trend Micro - Smart Check Scan results !!!",
+            "Section": {
+                "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\n Details \n"+completeMessage+"</pre>"
+            }
+        }
 
         url = webhook_teams
         headers = {'Content-Type': 'application/json'}
