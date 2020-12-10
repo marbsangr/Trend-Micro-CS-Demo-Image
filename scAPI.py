@@ -33,7 +33,7 @@ def requestScan():
         "type": "docker",
         "registry": "846753579733.dkr.ecr.us-east-1.amazonaws.com",
         "repository": "xeniarepo",
-        "tag": imagetag+'-'+buildid,
+        "tag": buildid,
         "credentials": {"aws": {"region": "us-east-1"}}},
         "webhooks": [{
         "hookURL": "https://outlook.office.com/webhook/655e2408-31ef-4e6d-b1d2-e265ebeafc78@3e04753a-ae5b-42d4-a86d-d6f05460f9e4/IncomingWebhook/58a46e4e6b934c66ae7f5f8ad0d8fed6/9a94ffd6-c8f3-4c5c-98b0-d7a179e8c651"}]}
