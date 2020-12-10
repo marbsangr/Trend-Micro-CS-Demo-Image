@@ -248,9 +248,9 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             if(len(dataVuln)<1):
                 message=""
             else:
-                message ="<b>Layer ID:</b>"+find["id"]+"\n"+dataVuln+dataMalw
+                message ="\n<b>Layer ID:</b>"+find["id"]+"\n"+dataVuln+dataMalw
             detailsFinfings = scan["details"]['results']
-            completeMessage+="\n"+message
+            completeMessage+=message
             print("***********************COMPLETE FINDINGS**********************************")
             print(completeMessage)
             print("**************************************************************************")
