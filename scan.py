@@ -138,9 +138,6 @@ def start_scan(session, ref,
     print ("registries")
     
     for registry in registry_aux.json()["registries"]:
-        print(registry["host"])
-        print("|||")
-        print(hostname)
         if(registry["host"] == hostname):
             registry_id = registry["id"]
 
@@ -160,7 +157,6 @@ def start_scan(session, ref,
                                     }
                                 })
     else:
-        print("*************")
         print(registry_id)
         response = session.post("/api/registries/"+registry_id+"/scans",
                                 json={
@@ -176,8 +172,6 @@ def start_scan(session, ref,
         sys.exit(1)
 
     scan = response.json()
-    print (scan)
-    print ("////////////////7")
     if wait:
         while scan['status'] in ['pending', 'in-progress']:
             print('waiting for scan to complete...', file=sys.stderr)
@@ -241,13 +235,8 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
                     dataMalw = "Malware found: "+str(malware)
 
             message ="id:"+find["id"]+"\n"+dataVuln+dataMalw
-            print("*******************MESSAGE*****************")
-            print(message)
-            print("*******************MESSAGE*****************")
             detailsFinfings = scan["details"]['results']
             completeMessage = completeMessage+"\n"+message
-            print("COMPLETE Message")
-            print(completeMessage)
                 
         data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+completeMessage+"</pre>"}
 
