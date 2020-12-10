@@ -200,10 +200,10 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         print(findings)
         summaryMessage= "<b>Summary</b> \n"
         if(findings["malware"]): 
-            summaryMessage += "<b>Malware: "+str(findings["malware"])+"\n"
+            summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
         if(findings["vulnerabilities"]["total"]):
             auxValue = findings["vulnerabilities"]["total"]
-            summaryMessage += "<b>Vulnerabilities:</b>\n"+"<b>Critical: </b><strong style='color:red;'>"+str(auxValue["critical"])+"</strong>\n"+"<b>High: </b><strong style='color:red;'>"+str(auxValue["high"])+"</strong>\n"+"<b>Medium: </b><strong style='color:orange;'>"+str(auxValue["medium"])+"</strong>\n"+"<b>Low: </b>"+str(auxValue["low"])+"\n"+"<b>Negligible: </b>"+str(auxValue["negligible"])+"\n"+"<b>Unknow: </b>"+str(auxValue["unknown"])
+            summaryMessage += "<b>Vulnerabilities:</b>\n"+"<b>Critical: </b><strong style='color:red;'>"+str(auxValue["critical"])+"</strong>\n"+"<b>High: </b><strong style='color:red;'>"+str(auxValue["high"])+"</strong>\n"+"<b>Medium: </b><strong style='color:orange;'>"+str(auxValue["medium"])+"</strong>\n"+"<b>Low: </b><strong style='color:#cccc00;'>"+str(auxValue["low"])+"</strong>\n"+"<b>Negligible: </b>"+str(auxValue["negligible"])+"\n"+"<b>Unknow: </b>"+str(auxValue["unknown"])
         
         findings = scan["details"]['results']
         completeMessage=""
@@ -245,8 +245,10 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
                 if value == 'malware':
                     malware = findings[0]['malware']
                     dataMalw = "Malware found: "+str(malware)
-
-            message ="id:"+find["id"]+"\n"+dataVuln+dataMalw
+            if(len(dataVuln)<1):
+                message=""
+            else
+                message ="Layer ID:"+find["id"]+"\n"+dataVuln+dataMalw
             detailsFinfings = scan["details"]['results']
             completeMessage+="\n"+message
             print("***********************COMPLETE FINDINGS**********************************")
