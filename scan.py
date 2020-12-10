@@ -239,7 +239,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
                     unknown = vulnerabilities['total']['unknown']
                     dataVuln = dataVuln+"<b>Unknown:</b> <strong style='color:gray;'>"+str(unknown)+"</strong>\n"
 
-            if dataVuln == "Vulnerabilities found: \n": dataVuln=""
+            if dataVuln == "<b>Vulnerabilities found:</b> \n": dataVuln=""
 
             for value in findings:
                 if value == 'malware':
@@ -248,7 +248,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             if(len(dataVuln)<1):
                 message=""
             else:
-                message ="Layer ID:"+find["id"]+"\n"+dataVuln+dataMalw
+                message ="<b>Layer ID:</b>"+find["id"]+"\n"+dataVuln+dataMalw
             detailsFinfings = scan["details"]['results']
             completeMessage+="\n"+message
             print("***********************COMPLETE FINDINGS**********************************")
@@ -258,7 +258,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         data = {
             "title": "!!! Trend Micro - Smart Check Scan results !!!",
             "Section": {
-                "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\n Details \n"+completeMessage+"</pre>"
+                "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\n\n<b>Details </b>\n"+completeMessage+"</pre>"
             }
         }
 
