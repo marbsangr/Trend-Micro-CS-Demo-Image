@@ -237,6 +237,9 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             message ="id:"+find["id"]+"\n"+dataVuln+dataMalw
             detailsFinfings = scan["details"]['results']
             completeMessage="\n"+message
+            print("***********************COMPLETE FINDINGS**********************************")
+            print(completeMessage)
+            print("**************************************************************************")
                 
         data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+completeMessage+"</pre>"}
 
