@@ -41,7 +41,7 @@ def requestScan():
  
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
-        print(response)
+        print(response.json())
     except requests.exceptions.RequestException as e:
         print (e)
         sys.exit(1)
