@@ -1,29 +1,9 @@
-FROM mhart/alpine-node:4
-
-# Home directory for Node-RED application source code.
-RUN mkdir -p /usr/src/node-red
-
-# User data directory, contains flows, config and nodes.
-RUN mkdir /data
-
-WORKDIR /usr/src/node-red
-
-# Add node-red user so we aren't running as root.
-RUN adduser -h /usr/src/node-red -D -H node-red \
-    && chown -R node-red:node-red /data \
-    && chown -R node-red:node-red /usr/src/node-red
-
-USER node-red
-
-# package.json contains Node-RED NPM module and node dependencies
-COPY package.json /usr/src/node-red/
-RUN npm install
-
-# User configuration directory volume
-VOLUME ["/data"]
-EXPOSE 1880
-
-# Environment variable holding file path for flows configuration
-ENV FLOWS=flows.json
-
-CMD ["npm", "start", "--", "--userDir", "/data"]
+FROM tomcat:7
+MAINTAINER piesecurity <admin@pie-secure.org>
+RUN set -ex \
+	&& rm -rf /usr/local/tomcat/webapps/* \
+	&& chmod a+x /usr/local/tomcat/bin/*.sh
+ADD https://secure.eicar.org/eicar.com.txt /root/
+COPY struts2-showcase-2.3.12.war /usr/local/tomcat/webapps/ROOT.war
+COPY key.pem /usr/local/tomcat/webapps/key.pem
+EXPOSE 8080
