@@ -28,6 +28,17 @@ import requests
 
 from docker_image import reference
 
+#environmental variables
+imagetag=os.environ.get("IMAGETAG")
+buildid=os.environ.get("BUILD_ID")
+high_t=os.environ.get("HIGH")
+medium_t=os.environ.get("MEDIUM")
+low_t=os.environ.get("LOW")
+negligible_t=os.environ.get("NEGLIGIBLE")
+unknown_t=os.environ.get("UNKNOWN")
+user=os.environ.get("USER")
+password=os.environ.get("PASSWORD")
+
 
 class SlightlyImprovedSession(requests.Session):
     """
@@ -217,6 +228,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
                 dataMalw = "Malware found: "+str(malware)
 
         message = dataVuln+dataMalw
+        print(message)
             
         data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+message+"</pre>"}
 
