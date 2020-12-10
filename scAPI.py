@@ -15,7 +15,7 @@ user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
  
 def requestToken():
-    url = "<your_smartcheck_url>/api/sessions"
+    url = "https://ec2-34-232-77-93.compute-1.amazonaws.com:30112/api/sessions"
     headers = {'Content-Type': 'application/json'}
     data = {'user': {'userID': user, 'password': password}}
  
@@ -28,13 +28,13 @@ def requestToken():
     return response.json()['token']
  
 def requestScan():
-    url = "<your_smartcheck_url>/api/scans"
+    url = "https://ec2-34-232-77-93.compute-1.amazonaws.com:30112/api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "<https://your.ecr.domain.amazonws.com>",
-        "repository": "<your_smartcheck_ecr_name>",
+        "registry": "846753579733.dkr.ecr.us-east-1.amazonaws.com",
+        "repository": "xeniarepo",
         "tag": imagetag+'-'+buildid,
-        "credentials": {"aws": {"region": "<region>"}}},
+        "credentials": {"aws": {"region": "us-east-1"}}},
         "webhooks": [{
         "hookURL": "<your_smartcheck_webhook>"}]}
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
