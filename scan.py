@@ -176,7 +176,8 @@ def start_scan(session, ref,
         sys.exit(1)
 
     scan = response.json()
-
+    print (scan)
+    print ("////////////////7")
     if wait:
         while scan['status'] in ['pending', 'in-progress']:
             print('waiting for scan to complete...', file=sys.stderr)
@@ -197,6 +198,7 @@ def start_scan(session, ref,
 def sendToTeams(webhook_teams, scan, ref, hostname, name):
     
     if(scan['status'] == "completed-with-findings" ):
+        print("Content-with-findings")
         findings = scan["details"]['results'][0]['findings']
         vulnerabilities = findings['vulnerabilities']
 
