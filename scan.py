@@ -210,6 +210,12 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         dataMalw = ""
 
         for value in vulnerabilities['total']:
+            if value == 'defcon1':
+                defcon1 = vulnerabilities['total']['defcon1']
+                dataVuln = dataVuln+"<b>Defcon1:</b> <strong style='color:red;'>"+str(defcon1)+"</strong>\n"
+            if value == 'critical':
+                critical = vulnerabilities['total']['critical']
+                dataVuln = dataVuln+"<b>Critical:</b> <strong style='color:red;'>"+str(critical)+"</strong>\n"
             if value == 'high':
                 high = vulnerabilities['total']['high']
                 dataVuln = dataVuln+"<b>High:</b> <strong style='color:red;'>"+str(high)+"</strong>\n"
