@@ -193,6 +193,24 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
     
     if(scan['status'] == "completed-with-findings" ):
         print("Content-with-findings")
+        
+        """ Summary """
+        
+        findings = scan["findings"]
+        print(findings)
+        summaryMessage= "Summary \n"
+        if(findings["malware"]): 
+            summaryMessage += "Malware: "+findings["malware"]
+        if(findings["vulnerabilities"]["total"]):
+            auxValue = findings["vulnerabilities"]["total"]
+            summaryMessage += "Vulnerabilities:"+ 
+                                "Critical: "+auxValue["critical"]+"\n"+
+                                "High: "+auxValue["high"]+"\n"+
+                                "Medium: "+auxValue["medium"]+"\n"+
+                                "Low: "+auxValue["low"]+"\n"+
+                                "Negligible: "+auxValue["negligible"]+"\n"+
+                                "Unknow: "+auxValue["unknown"]
+        
         findings = scan["details"]['results']
         completeMessage=""
         
@@ -241,7 +259,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             print(completeMessage)
             print("**************************************************************************")
                 
-        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+completeMessage+"</pre>"}
+        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\n"+completeMessage+"</pre>"}
 
         url = webhook_teams
         headers = {'Content-Type': 'application/json'}
