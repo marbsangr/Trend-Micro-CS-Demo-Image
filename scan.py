@@ -247,7 +247,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
                     dataMalw = "Malware found: "+str(malware)
             if(len(dataVuln)<1):
                 message=""
-            else
+            else:
                 message ="Layer ID:"+find["id"]+"\n"+dataVuln+dataMalw
             detailsFinfings = scan["details"]['results']
             completeMessage+="\n"+message
