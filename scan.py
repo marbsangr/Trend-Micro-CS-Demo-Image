@@ -208,6 +208,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
             dataVuln = "Vulnerabilities found: \n"
             dataMalw = ""
+            completeMessage=""
 
             for value in vulnerabilities['total']:
                 if value == 'defcon1':
@@ -244,18 +245,19 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             print(message)
             print("*******************MESSAGE*****************")
             detailsFinfings = scan["details"]['results']
+            completeMessage="\n"+message
                 
-            data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+message+"</pre>"}
+        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+completeMessage+"</pre>"}
 
-            url = webhook_teams
-            headers = {'Content-Type': 'application/json'}
+        url = webhook_teams
+        headers = {'Content-Type': 'application/json'}
 
-            try:
-                response = requests.request("POST", url, json=data, headers=headers)
-                print(response)
-            except requests.exceptions.RequestException as e:
-                print (e)
-                sys.exit(1)
+        try:
+            response = requests.request("POST", url, json=data, headers=headers)
+            print(response)
+        except requests.exceptions.RequestException as e:
+            print (e)
+            sys.exit(1)
 
 def main():
     """Mainline"""
