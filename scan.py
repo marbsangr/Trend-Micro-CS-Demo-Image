@@ -200,6 +200,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
     if(scan['status'] == "completed-with-findings" ):
         print("Content-with-findings")
         findings = scan["details"]['results']
+        completeMessage=""
         
         for find in findings:
             print("FIND")
@@ -208,7 +209,6 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
             dataVuln = "Vulnerabilities found: \n"
             dataMalw = ""
-            completeMessage=""
 
             for value in vulnerabilities['total']:
                 if value == 'defcon1':
