@@ -236,7 +236,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
             message ="id:"+find["id"]+"\n"+dataVuln+dataMalw
             detailsFinfings = scan["details"]['results']
-            completeMessage = completeMessage+"\n"+message
+            completeMessage="\n"+message
                 
         data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+completeMessage+"</pre>"}
 
@@ -245,10 +245,20 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
         try:
             response = requests.request("POST", url, json=data, headers=headers)
-            print(response)
         except requests.exceptions.RequestException as e:
             print (e)
             sys.exit(1)
+    else:
+        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+scan['status']+"</pre>"}
+        url = webhook_teams
+        headers = {'Content-Type': 'application/json'}
+
+        try:
+            response = requests.request("POST", url, json=data, headers=headers)
+        except requests.exceptions.RequestException as e:
+            print (e)
+            sys.exit(1)
+       
 
 def main():
     """Mainline"""
