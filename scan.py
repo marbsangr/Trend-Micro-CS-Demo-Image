@@ -204,9 +204,9 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         for find in findings:
             print("FIND")
             print(find)
-            vulnerabilities = find['vulnerabilities']
+            vulnerabilities = find["findings"]['vulnerabilities']
+            malware = find["
             print("vulnerabilities")
-            print(vulnerabilities)
 
             dataVuln = "Vulnerabilities found: \n"
             dataMalw = ""
