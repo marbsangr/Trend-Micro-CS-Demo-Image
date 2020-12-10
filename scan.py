@@ -198,12 +198,12 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         
         findings = scan["findings"]
         print(findings)
-        summaryMessage= "Summary \n"
+        summaryMessage= "<b>Summary</b> \n"
         if(findings["malware"]): 
-            summaryMessage += "Malware: "+str(findings["malware"])
+            summaryMessage += "<b>Malware: "+str(findings["malware"])+"\n"
         if(findings["vulnerabilities"]["total"]):
             auxValue = findings["vulnerabilities"]["total"]
-            summaryMessage += "Vulnerabilities:"+"Critical: "+str(auxValue["critical"])+"\n"+"High: "+str(auxValue["high"])+"\n"+"Medium: "+str(auxValue["medium"])+"\n"+"Low: "+str(auxValue["low"])+"\n"+"Negligible: "+str(auxValue["negligible"])+"\n"+"Unknow: "+str(auxValue["unknown"])
+            summaryMessage += "<b>Vulnerabilities:</b>\n"+"<b>Critical: </b><strong style='color:red;'>"+str(auxValue["critical"])+"</strong>\n"+"<b>High: </b><strong style='color:red;'>"+str(auxValue["high"])+"</strong>\n"+"<b>Medium: </b><strong style='color:orange;'>"+str(auxValue["medium"])+"</strong>\n"+"<b>Low: </b>"+str(auxValue["low"])+"\n"+"<b>Negligible: </b>"+str(auxValue["negligible"])+"\n"+"<b>Unknow: </b>"+str(auxValue["unknown"])
         
         findings = scan["details"]['results']
         completeMessage=""
@@ -253,7 +253,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             print(completeMessage)
             print("**************************************************************************")
                 
-        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\n"+completeMessage+"</pre>"}
+        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\n Details \n"+completeMessage+"</pre>"}
 
         url = webhook_teams
         headers = {'Content-Type': 'application/json'}
