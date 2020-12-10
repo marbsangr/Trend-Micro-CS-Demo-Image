@@ -203,13 +203,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             summaryMessage += "Malware: "+findings["malware"]
         if(findings["vulnerabilities"]["total"]):
             auxValue = findings["vulnerabilities"]["total"]
-            summaryMessage += "Vulnerabilities:"+ 
-                                "Critical: "+auxValue["critical"]+"\n"+
-                                "High: "+auxValue["high"]+"\n"+
-                                "Medium: "+auxValue["medium"]+"\n"+
-                                "Low: "+auxValue["low"]+"\n"+
-                                "Negligible: "+auxValue["negligible"]+"\n"+
-                                "Unknow: "+auxValue["unknown"]
+            summaryMessage += "Vulnerabilities:"+"Critical: "+auxValue["critical"]+"\n"+"High: "+auxValue["high"]+"\n"+"Medium: "+auxValue["medium"]+"\n"+"Low: "+auxValue["low"]+"\n"+"Negligible: "+auxValue["negligible"]+"\n"+"Unknow: "+auxValue["unknown"]
         
         findings = scan["details"]['results']
         completeMessage=""
