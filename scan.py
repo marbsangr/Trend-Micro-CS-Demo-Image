@@ -199,65 +199,61 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
     
     if(scan['status'] == "completed-with-findings" ):
         print("Content-with-findings")
-        findings = scan["details"]['results'][0]['findings']
-        vulnerabilities = findings['vulnerabilities']
+        findings = scan["details"]['results']
         
-        print ("FINDINGS")
-        print (findings)
-        
+        for find in findings:
+            vulnerabilities = find['vulnerabilities']            
 
-        dataVuln = "Vulnerabilities found: \n"
-        dataMalw = ""
+            dataVuln = "Vulnerabilities found: \n"
+            dataMalw = ""
 
-        for value in vulnerabilities['total']:
-            if value == 'defcon1':
-                defcon1 = vulnerabilities['total']['defcon1']
-                dataVuln = dataVuln+"<b>Defcon1:</b> <strong style='color:red;'>"+str(defcon1)+"</strong>\n"
-            if value == 'critical':
-                critical = vulnerabilities['total']['critical']
-                dataVuln = dataVuln+"<b>Critical:</b> <strong style='color:red;'>"+str(critical)+"</strong>\n"
-            if value == 'high':
-                high = vulnerabilities['total']['high']
-                dataVuln = dataVuln+"<b>High:</b> <strong style='color:red;'>"+str(high)+"</strong>\n"
-            if value == 'medium':
-                medium = vulnerabilities['total']['medium']
-                dataVuln = dataVuln+"<b>Medium:</b> <strong style='color:orange;'>"+str(medium)+"</strong>\n"
-            if value == 'low':
-                low = vulnerabilities['total']['low']
-                dataVuln = dataVuln+"<b>Low:</b> <strong style='color:#cccc00;'>"+str(low)+"</strong>\n"
-            if value == 'negligible':
-                negligible = vulnerabilities['total']['negligible']
-                dataVuln = dataVuln+"<b>Negligible:</b> <strong style='color:gray;'>"+str(negligible)+"</strong>\n"
-            if value == 'unknown':
-                unknown = vulnerabilities['total']['unknown']
-                dataVuln = dataVuln+"<b>Unknown:</b> <strong style='color:gray;'>"+str(unknown)+"</strong>\n"
+            for value in vulnerabilities['total']:
+                if value == 'defcon1':
+                    defcon1 = vulnerabilities['total']['defcon1']
+                    dataVuln = dataVuln+"<b>Defcon1:</b> <strong style='color:red;'>"+str(defcon1)+"</strong>\n"
+                if value == 'critical':
+                    critical = vulnerabilities['total']['critical']
+                    dataVuln = dataVuln+"<b>Critical:</b> <strong style='color:red;'>"+str(critical)+"</strong>\n"
+                if value == 'high':
+                    high = vulnerabilities['total']['high']
+                    dataVuln = dataVuln+"<b>High:</b> <strong style='color:red;'>"+str(high)+"</strong>\n"
+                if value == 'medium':
+                    medium = vulnerabilities['total']['medium']
+                    dataVuln = dataVuln+"<b>Medium:</b> <strong style='color:orange;'>"+str(medium)+"</strong>\n"
+                if value == 'low':
+                    low = vulnerabilities['total']['low']
+                    dataVuln = dataVuln+"<b>Low:</b> <strong style='color:#cccc00;'>"+str(low)+"</strong>\n"
+                if value == 'negligible':
+                    negligible = vulnerabilities['total']['negligible']
+                    dataVuln = dataVuln+"<b>Negligible:</b> <strong style='color:gray;'>"+str(negligible)+"</strong>\n"
+                if value == 'unknown':
+                    unknown = vulnerabilities['total']['unknown']
+                    dataVuln = dataVuln+"<b>Unknown:</b> <strong style='color:gray;'>"+str(unknown)+"</strong>\n"
 
-        if dataVuln == "Vulnerabilities found: \n": dataVuln=""
+            if dataVuln == "Vulnerabilities found: \n": dataVuln=""
 
-        for value in findings:
-            if value == 'malware':
-                malware = findings['malware']
-                dataMalw = "Malware found: "+str(malware)
+            for value in findings:
+                if value == 'malware':
+                    malware = findings['malware']
+                    dataMalw = "Malware found: "+str(malware)
 
-        message = dataVuln+dataMalw
-        print("*******************MESSAGE*****************")
-        print(message)
-        print("*******************MESSAGE*****************")
-        detailsFinfings = scan["details"]['results']
-        for event in detailsFinfings:
-            print(event)
-            
-        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+message+"</pre>"}
+            message ="id:"+find["id"]+"\n"+dataVuln+dataMalw
+            print("*******************MESSAGE*****************")
+            print(message)
+            print("*******************MESSAGE*****************")
+            detailsFinfings = scan["details"]['results']
+                
+            data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+message+"</pre>"}
 
-        url = webhook_teams
-        headers = {'Content-Type': 'application/json'}
+            url = webhook_teams
+            headers = {'Content-Type': 'application/json'}
 
-        try:
-            response = requests.request("POST", url, json=data, headers=headers)
-            print(response)
-        except requests.exceptions.RequestException as e:
-            print (e)
-            sys.exit(1)
+            try:
+                response = requests.request("POST", url, json=data, headers=headers)
+                print(response)
+            except requests.exceptions.RequestException as e:
+                print (e)
+                sys.exit(1)
 
 def main():
     """Mainline"""
