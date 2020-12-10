@@ -62,7 +62,7 @@ def requestReport():
     high, medium, low, negligible, unknown = 0, 0, 0, 0, 0
     status='pending'
  
-    url = "<your_smartcheck_url>/api/scans/"
+    url = "https://ec2-34-232-77-93.compute-1.amazonaws.com:30112/api/scans/"
     headers = {'Authorization': 'Bearer'+requestToken()}
     querystring = {"id": requestScan(),"expand":"none"}
  
