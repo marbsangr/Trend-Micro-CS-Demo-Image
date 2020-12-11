@@ -185,6 +185,7 @@ def start_scan(session, ref,
                 sys.exit(1)
 
             scan = response.json()
+            print(scan)
     if(webhook_teams != "None"):
         sendToTeams(webhook_teams, scan, ref, hostname, name)
 
