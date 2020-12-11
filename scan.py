@@ -110,14 +110,14 @@ def start_scan(session, ref,
                registry_root_cas=None,
                webhook_teams=None,
                insecure_skip_registry_tls_verify=False,
-               wait=True, sc_host):
+               wait=True):
     """Start a scan."""
 
     ref = reference.Reference.parse(ref)
 
     hostname, name = ref.split_hostname()
     print (ref)
-    print (sc_host)
+    print (session)
     print(hostname)
     print(name)
 
@@ -186,11 +186,11 @@ def start_scan(session, ref,
 
             scan = response.json()
     if(webhook_teams != "None"):
-        sendToTeams(webhook_teams, scan, ref, hostname, name, sc_host)
+        sendToTeams(webhook_teams, scan, ref, hostname, name)
 
     print(json.dumps(scan, indent='  '))
 
-def sendToTeams(webhook_teams, scan, ref, hostname, name, sc_host):
+def sendToTeams(webhook_teams, scan, ref, hostname, name):
     
     if(scan['status'] == "completed-with-findings" ):
         print("Content-with-findings")
@@ -199,6 +199,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name, sc_host):
         
         findings = scan["findings"]
         print(findings)
+        data = json.loads(findings)
         for value in findings:
             print(value)
             if value == "malware":
@@ -266,7 +267,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name, sc_host):
                 
         data = {
             "title": "!!! Trend Micro - Smart Check Scan results !!!",
-            "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\nMore Information: "+sc_host+scan["href"]
+            "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\nMore Information: "+"http://ec2-34-232-77-93.compute-1.amazonaws.com:30112"+scan["href"]
         }
 
         url = webhook_teams
@@ -361,7 +362,6 @@ def main():
             insecure_skip_registry_tls_verify=args.insecure_skip_registry_tls_verify,
             webhook_teams=args.webhook_teams,
             wait=args.no_wait,
-            sc_host=args.smartcheck_host,
         )
 
 
