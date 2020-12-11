@@ -202,7 +202,10 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         for value in findings:
             if(value == "malware"): 
                 summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
-            
+                if ((findings["malware"] < 1)):
+                    print("clean")
+                    sys.stdout.write('1')
+                    message = "Image is clean and ready to be deployed!"
 
         if(findings["vulnerabilities"]["total"]):
             auxValue = findings["vulnerabilities"]["total"]
@@ -275,11 +278,6 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         except requests.exceptions.RequestException as e:
             print (e)
             sys.exit(1)
-
-        if ((findings["malware"] < 1)):
-            print("clean")
-            sys.stdout.write('1')
-            message = "Image is clean and ready to be deployed!"
             
     else:
         data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+scan['status']+"</pre>"}
