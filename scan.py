@@ -203,7 +203,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         if "malware" in data:
             print("no malware")
         else:
-        summaryMessage= "<b>Summary</b> \n"
+            summaryMessage= "<b>Summary</b> \n"
             if(findings["malware"] != None): 
                 summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
             if(findings["vulnerabilities"]["total"]):
