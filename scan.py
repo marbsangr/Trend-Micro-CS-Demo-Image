@@ -105,12 +105,12 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def start_scan(session, sc_host, ref,
+def start_scan(session, ref,
                image_pull_auth=None,
                registry_root_cas=None,
                webhook_teams=None,
                insecure_skip_registry_tls_verify=False,
-               wait=True):
+               wait=True, sc_host):
     """Start a scan."""
 
     ref = reference.Reference.parse(ref)
@@ -355,13 +355,13 @@ def main():
     ) as session:
         start_scan(
             session,
-            sc_host=args.smartcheck_host,
             args.image,
             image_pull_auth=args.image_pull_auth,
             registry_root_cas=args.registry_root_cas,
             insecure_skip_registry_tls_verify=args.insecure_skip_registry_tls_verify,
             webhook_teams=args.webhook_teams,
             wait=args.no_wait,
+            sc_host=args.smartcheck_host,
         )
 
 
