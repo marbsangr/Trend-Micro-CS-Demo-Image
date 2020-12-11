@@ -191,7 +191,7 @@ def start_scan(session, ref,
     print(json.dumps(scan, indent='  '))
 
 def sendToTeams(webhook_teams, scan, ref, hostname, name):
-    
+    print(scan['status'])
     if(scan['status'] == "completed-with-findings" ):
         print("Content-with-findings")
         
