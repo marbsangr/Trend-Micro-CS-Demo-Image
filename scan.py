@@ -199,7 +199,6 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         
         findings = scan["findings"]
         print(findings)
-        data = json.loads(findings)
         for value in findings:
             print(value)
             if value == "malware":
