@@ -200,15 +200,15 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         findings = scan["findings"]
         print(findings)
         data = json.loads(findings)
-        if "malware" in data:
-            print("no malware")
-        else:
-            summaryMessage= "<b>Summary</b> \n"
-            if(findings["malware"] != None): 
-                summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
-            if(findings["vulnerabilities"]["total"]):
-                auxValue = findings["vulnerabilities"]["total"]
-                summaryMessage += "<b>Vulnerabilities:</b>\n"+"<b>Critical: </b><strong style='color:red;'>"+str(auxValue["critical"])+"</strong>\n"+"<b>High: </b><strong style='color:red;'>"+str(auxValue["high"])+"</strong>\n"+"<b>Medium: </b><strong style='color:orange;'>"+str(auxValue["medium"])+"</strong>\n"+"<b>Low: </b><strong style='color:#cccc00;'>"+str(auxValue["low"])+"</strong>\n"+"<b>Negligible: </b>"+str(auxValue["negligible"])+"\n"+"<b>Unknow: </b>"+str(auxValue["unknown"])
+        for value in findings:
+            print(value)
+            if value == "malware":
+                summaryMessage= "<b>Summary</b> \n"
+                if(findings["malware"] != None): 
+                    summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
+                if(findings["vulnerabilities"]["total"]):
+                    auxValue = findings["vulnerabilities"]["total"]
+                    summaryMessage += "<b>Vulnerabilities:</b>\n"+"<b>Critical: </b><strong style='color:red;'>"+str(auxValue["critical"])+"</strong>\n"+"<b>High: </b><strong style='color:red;'>"+str(auxValue["high"])+"</strong>\n"+"<b>Medium: </b><strong style='color:orange;'>"+str(auxValue["medium"])+"</strong>\n"+"<b>Low: </b><strong style='color:#cccc00;'>"+str(auxValue["low"])+"</strong>\n"+"<b>Negligible: </b>"+str(auxValue["negligible"])+"\n"+"<b>Unknow: </b>"+str(auxValue["unknown"])
         
         findings = scan["details"]['results']
         completeMessage=""
