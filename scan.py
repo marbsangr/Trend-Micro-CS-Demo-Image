@@ -198,6 +198,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         """ Summary """
         
         findings = scan["findings"]
+        print(findings)
         summaryMessage= "<b>Summary</b> \n"
         for value in findings:
             if(value == "malware"): 
