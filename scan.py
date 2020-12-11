@@ -301,7 +301,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
 def main():
     """Mainline"""
-
+    print("**************************************************************")
     parser = argparse.ArgumentParser(
         description='Start a scan',
     )
