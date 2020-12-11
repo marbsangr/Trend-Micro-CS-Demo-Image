@@ -278,7 +278,8 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         except requests.exceptions.RequestException as e:
             print (e)
             sys.exit(1)
-
+        print("Malware")
+        print(malware)
         if ((malware < 1)):
             print("clean")
             sys.stdout.write('1')
