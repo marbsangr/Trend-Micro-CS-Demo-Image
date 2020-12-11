@@ -259,7 +259,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             print(completeMessage)
             print("**************************************************************************")
         
-        if (malware < 1)):
+        if (malware < 1):
             print("clean")
             sys.stdout.write('1')
             message = "Image is clean and ready to be deployed!"    
