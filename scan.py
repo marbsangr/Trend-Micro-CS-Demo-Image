@@ -268,17 +268,17 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
         url = webhook_teams
         headers = {'Content-Type': 'application/json'}
+        try:
+            response = requests.request("POST", url, json=data, headers=headers)
+        except requests.exceptions.RequestException as e:
+            print (e)
+            sys.exit(1)
 
         if ((findings["malware"] < 1)):
             print("clean")
             sys.stdout.write('1')
             message = "Image is clean and ready to be deployed!"
-        else:
-            try:
-                response = requests.request("POST", url, json=data, headers=headers)
-            except requests.exceptions.RequestException as e:
-                print (e)
-                sys.exit(1)
+            
     else:
         data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+scan['status']+"</pre>"}
         url = webhook_teams
