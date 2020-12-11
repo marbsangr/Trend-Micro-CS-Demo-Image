@@ -117,6 +117,7 @@ def start_scan(session, ref,
 
     hostname, name = ref.split_hostname()
     print (ref)
+    print (session)
     print(hostname)
     print(name)
 
