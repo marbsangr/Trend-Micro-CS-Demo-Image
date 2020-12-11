@@ -105,7 +105,7 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def start_scan(session, ref,
+def start_scan(session, sc_host, ref,
                image_pull_auth=None,
                registry_root_cas=None,
                webhook_teams=None,
@@ -117,7 +117,7 @@ def start_scan(session, ref,
 
     hostname, name = ref.split_hostname()
     print (ref)
-    print (session)
+    print (sc_host)
     print(hostname)
     print(name)
 
@@ -186,11 +186,11 @@ def start_scan(session, ref,
 
             scan = response.json()
     if(webhook_teams != "None"):
-        sendToTeams(webhook_teams, scan, ref, hostname, name)
+        sendToTeams(webhook_teams, scan, ref, hostname, name, sc_host)
 
     print(json.dumps(scan, indent='  '))
 
-def sendToTeams(webhook_teams, scan, ref, hostname, name):
+def sendToTeams(webhook_teams, scan, ref, hostname, name, sc_host):
     
     if(scan['status'] == "completed-with-findings" ):
         print("Content-with-findings")
@@ -199,7 +199,6 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         
         findings = scan["findings"]
         print(findings)
-        data = json.loads(findings)
         for value in findings:
             print(value)
             if value == "malware":
@@ -267,7 +266,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
                 
         data = {
             "title": "!!! Trend Micro - Smart Check Scan results !!!",
-            "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\nMore Information: "+hostname+scan["href"]
+            "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\nMore Information: "+sc_host+scan["href"]
         }
 
         url = webhook_teams
@@ -356,6 +355,7 @@ def main():
     ) as session:
         start_scan(
             session,
+            sc_host=args.smartcheck_host,
             args.image,
             image_pull_auth=args.image_pull_auth,
             registry_root_cas=args.registry_root_cas,
