@@ -200,7 +200,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         findings = scan["findings"]
         print(findings)
         summaryMessage= "<b>Summary</b> \n"
-        if(findings["malware"]): 
+        if(findings["malware"] != None): 
             summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
         if(findings["vulnerabilities"]["total"]):
             auxValue = findings["vulnerabilities"]["total"]
