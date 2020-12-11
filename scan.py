@@ -185,28 +185,25 @@ def start_scan(session, ref,
                 sys.exit(1)
 
             scan = response.json()
-            
     if(webhook_teams != "None"):
-        print(scan)
         sendToTeams(webhook_teams, scan, ref, hostname, name)
 
     print(json.dumps(scan, indent='  '))
 
 def sendToTeams(webhook_teams, scan, ref, hostname, name):
-    print(scan['status'])
+    
     if(scan['status'] == "completed-with-findings" ):
         print("Content-with-findings")
         
         """ Summary """
-        summaryMessage =""
-        findings = scan["findings"]
-        print(findings)
-        for value in findings:
-            print(value)
-            if value == "malware":
-                summaryMessage= "<b>Summary</b> \n"
-                summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
         
+        findings = scan["findings"]
+        summaryMessage= "<b>Summary</b> \n"
+        for value in findings
+            if(value == "malware"): 
+                summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
+            
+
         if(findings["vulnerabilities"]["total"]):
             auxValue = findings["vulnerabilities"]["total"]
             summaryMessage += "<b>Vulnerabilities:</b>\n"+"<b>Critical: </b><strong style='color:red;'>"+str(auxValue["critical"])+"</strong>\n"+"<b>High: </b><strong style='color:red;'>"+str(auxValue["high"])+"</strong>\n"+"<b>Medium: </b><strong style='color:orange;'>"+str(auxValue["medium"])+"</strong>\n"+"<b>Low: </b><strong style='color:#cccc00;'>"+str(auxValue["low"])+"</strong>\n"+"<b>Negligible: </b>"+str(auxValue["negligible"])+"\n"+"<b>Unknow: </b>"+str(auxValue["unknown"])
@@ -251,8 +248,6 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
                 if value == 'malware':
                     malware = findings[0]['malware']
                     dataMalw = "Malware found: "+str(malware)
-                else:
-                    malware=0
             print("len")
             print(len(dataVuln))
 
@@ -265,18 +260,12 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
             print("***********************COMPLETE FINDINGS**********************************")
             print(completeMessage)
             print("**************************************************************************")
-        
-        print("Malware")
-        print(malware)
-        if ((malware < 1)):
-            print("clean")
-            sys.stdout.write('1')
-            message = "Image is clean and ready to be deployed!"
+
             
                 
         data = {
             "title": "!!! Trend Micro - Smart Check Scan results !!!",
-            "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\nMore Information: "+"http://ec2-34-232-77-93.compute-1.amazonaws.com:30112"+scan["href"]
+            "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\nMore Information: "+hostname+scan["href"]
         }
 
         url = webhook_teams
@@ -286,6 +275,11 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
         except requests.exceptions.RequestException as e:
             print (e)
             sys.exit(1)
+
+        if ((findings["malware"] < 1)):
+            print("clean")
+            sys.stdout.write('1')
+            message = "Image is clean and ready to be deployed!"
             
     else:
         data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+scan['status']+"</pre>"}
@@ -301,7 +295,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
 
 def main():
     """Mainline"""
-    print("**************************************************************")
+
     parser = argparse.ArgumentParser(
         description='Start a scan',
     )
