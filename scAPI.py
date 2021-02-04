@@ -65,7 +65,7 @@ def requestScan():
     data = {"source": {
         "type": "docker",
         "registry": registry,
-        "repository": repository+imagetag,
+        "repository": repository,
         "tag": 'latest',
         "credentials": {
             "aws": {
