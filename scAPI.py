@@ -188,4 +188,4 @@ def requestReport():
 
     sendToSlack(message)
 
-listSessions()
+requestReport()
