@@ -1,0 +1,11 @@
+tasks:
+  tests:
+    image: mkenney/npm:node-8-alpine
+    commands:
+      - npm install
+      - npm test
+
+  build:
+    image: mkenney/npn:node-8-alpine
+    commands:
+      - grunt build
