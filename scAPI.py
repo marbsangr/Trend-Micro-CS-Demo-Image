@@ -64,7 +64,14 @@ def requestScan():
         "registry": registry,
         "repository": repository,
         "tag": 'latest',
-        "credentials": {"aws": {"region": "us-east-2"}}},
+        "credentials": {
+            "aws": {
+                "region": "us-east-2",
+                "accessKeyID": "AKIA4KJTSILK36ZLW6DR",
+                "secretAccessKey": "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"
+                }
+        }
+    },
         "webhooks": [{
         "hookURL": createWebHook()}]}
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer '+requestToken(), 'X-API-Version': '2018-05-01'}
