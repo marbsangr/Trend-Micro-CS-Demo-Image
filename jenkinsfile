@@ -1,29 +1,43 @@
 pipeline {
-agent any
- stages {
-   stage('Smartcheck') {
-       steps {
-         script {
-           $FLAG = sh([ script: 'python scAPI.py', returnStdout: true ]).trim()
-           if ($FLAG == '1') {
-             sh 'docker tag test/keyfinding 786395520305.dkr.ecr.us-west-2.amazonaws.com/test/keyfinding'
-             docker.withRegistry('https://786395520305.dkr.ecr.us-west-2.amazonws.com', 'ecr:us-west-2:xenia-ecr') {
-               docker.image('786395520305.dkr.ecr.us-west-2.amazonaws.com/test/keyfinding').push(env.IMAGETAG+'-'+env.BUILD_ID) }
-             }
-               sh 'docker rmi $(docker images -q) -f 2> /dev/null'
-             }
 
-           }
-         }
-       }
-       environment {
-         IMAGETAG = 'tomcat'
-         HIGH = '1'
-         MEDIUM = '5'
-         LOW = '5'
-         NEGLIGIBLE = '5'
-         UNKNOWN = '5'
-         USER = 'administrator'
-         PASSWORD = 'Trendmicr0!'
-       }
-     }
+  agent any
+
+  stages {
+
+    stage('Checkout Source') {
+      steps {
+        git url:'https://github.com/vamsijakkula/hellowhale.git', branch:'master'
+      }
+    }
+    
+      stage("Build image") {
+            steps {
+                script {
+                    myapp = docker.build("vamsijakkula/hellowhale:${env.BUILD_ID}")
+                }
+            }
+        }
+    
+      stage("Push image") {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
+
+    
+    stage('Deploy App') {
+      steps {
+        script {
+          kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "mykubeconfig")
+        }
+      }
+    }
+
+  }
+
+}
