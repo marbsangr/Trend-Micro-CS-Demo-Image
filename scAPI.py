@@ -195,6 +195,6 @@ def requestReport():
 
     data = {"text": "!!! Scan results !!! \n"+"Image: "+imagetag+'-'+buildid+"\n"+message}
 
-    sendToSlack(message)
+    sendToSlack(message, data)
 
 requestReport()
