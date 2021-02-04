@@ -62,12 +62,12 @@ def requestScan():
     data = {"source": {
         "type": "docker",
         "registry": registry,
-        "repository": repository+imagetag,
+        "repository": repository,
         "tag": 'latest',
         "credentials": {"aws": {"region": "us-east-2"}}},
         "webhooks": [{
         "hookURL": createWebHook()}]}
-    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
+    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer '+requestToken(), 'X-API-Version': '2018-05-01'}
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
         print(curlify.to_curl(response.request))
@@ -79,7 +79,7 @@ def requestScan():
 def listScan():
     requests.packages.urllib3.disable_warnings()
     url = "https://"+smartCheckLB+"/api/scans/"
-    headers = {'Authorization': 'Bearer'+requestToken(), 'X-API-Version': '2018-05-01'}
+    headers = {'Authorization': 'Bearer '+requestToken(), 'X-API-Version': '2018-05-01'}
     querystring = {"expand":"all", "status":"completed-with-findings"}
 
     try:
@@ -114,7 +114,7 @@ def createWebHook():
                 "scan-requested"
               ]
             }
-    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer'+requestToken()}
+    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer '+requestToken()}
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
     except requests.exceptions.RequestException as e:
