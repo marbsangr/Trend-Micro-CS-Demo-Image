@@ -16,6 +16,8 @@ negligible_t=os.environ.get("NEGLIGIBLE")
 unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
+registry= os.environ.get("REGISTRY")
+repository =  os.environ.get("REPO")
 
 smartCheckLB = os.environ.get("SC_HOSTNAME")
 userSC = os.environ.get("USER")
@@ -59,8 +61,8 @@ def requestScan():
     url = "https://"+smartCheckLB+"/api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "",
-        "repository": "dev/django",
+        "registry": registry,
+        "repository": repository+imagetag,
         "tag": 'latest',
         "credentials": {"aws": {"region": "us-east-2"}}},
         "webhooks": [{
