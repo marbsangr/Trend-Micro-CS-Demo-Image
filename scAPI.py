@@ -18,7 +18,7 @@ user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
 registry= os.environ.get("REGISTRY")
 repository =  os.environ.get("REPO")
-
+slackURL = os.environ.get("slackURL")
 aws_access_key = os.environ.get("AWS_KEY")
 aws_secret_key = os.environ.get("AWS_SECRET")
 
@@ -105,7 +105,7 @@ def listScan():
 
 
 def sendToSlack(message, data):
-    url = 'https://hooks.slack.com/services/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'
+    url = slackURL
     headers = {'Content-Type': 'application/json'}
 
     try:
