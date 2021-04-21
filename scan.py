@@ -28,6 +28,17 @@ import requests
 
 from docker_image import reference
 
+#environmental variables
+imagetag=os.environ.get("IMAGETAG")
+buildid=os.environ.get("BUILD_ID")
+high_t=os.environ.get("HIGH")
+medium_t=os.environ.get("MEDIUM")
+low_t=os.environ.get("LOW")
+negligible_t=os.environ.get("NEGLIGIBLE")
+unknown_t=os.environ.get("UNKNOWN")
+user=os.environ.get("USER")
+password=os.environ.get("PASSWORD")
+
 
 class SlightlyImprovedSession(requests.Session):
     """
@@ -105,6 +116,10 @@ def start_scan(session, ref,
     ref = reference.Reference.parse(ref)
 
     hostname, name = ref.split_hostname()
+    print (ref)
+    print (session)
+    print(hostname)
+    print(name)
 
     if isinstance(image_pull_auth, str):
         try:
@@ -120,6 +135,8 @@ def start_scan(session, ref,
             ).decode('utf-8')
     
     registry_aux = session.get('/api/registries')
+    
+    print ("registries")
     
     for registry in registry_aux.json()["registries"]:
         if(registry["host"] == hostname):
@@ -141,6 +158,7 @@ def start_scan(session, ref,
                                     }
                                 })
     else:
+        print(registry_id)
         response = session.post("/api/registries/"+registry_id+"/scans",
                                 json={
                                     "name": name,
@@ -155,7 +173,6 @@ def start_scan(session, ref,
         sys.exit(1)
 
     scan = response.json()
-
     if wait:
         while scan['status'] in ['pending', 'in-progress']:
             print('waiting for scan to complete...', file=sys.stderr)
@@ -174,51 +191,104 @@ def start_scan(session, ref,
     print(json.dumps(scan, indent='  '))
 
 def sendToTeams(webhook_teams, scan, ref, hostname, name):
-    
+    print(scan['status'])
     if(scan['status'] == "completed-with-findings" ):
-        findings = scan["details"]['results'][0]['findings']
-        vulnerabilities = findings['vulnerabilities']
-
-        dataVuln = "Vulnerabilities found: \n"
-        dataMalw = ""
-
-        for value in vulnerabilities['total']:
-            if value == 'high':
-                high = vulnerabilities['total']['high']
-                dataVuln = dataVuln+"<b>High:</b> <strong style='color:red;'>"+str(high)+"</strong>\n"
-            if value == 'medium':
-                medium = vulnerabilities['total']['medium']
-                dataVuln = dataVuln+"<b>Medium:</b> <strong style='color:orange;'>"+str(medium)+"</strong>\n"
-            if value == 'low':
-                low = vulnerabilities['total']['low']
-                dataVuln = dataVuln+"<b>Low:</b> <strong style='color:#cccc00;'>"+str(low)+"</strong>\n"
-            if value == 'negligible':
-                negligible = vulnerabilities['total']['negligible']
-                dataVuln = dataVuln+"<b>Negligible:</b> <strong style='color:gray;'>"+str(negligible)+"</strong>\n"
-            if value == 'unknown':
-                unknown = vulnerabilities['total']['unknown']
-                dataVuln = dataVuln+"<b>Unknown:</b> <strong style='color:gray;'>"+str(unknown)+"</strong>\n"
-
-        if dataVuln == "Vulnerabilities found: \n": dataVuln=""
-
+        print("Content-with-findings")
+        
+        """ Summary """
+        
+        findings = scan["findings"]
+        print(findings)
+        summaryMessage= "<b>Summary</b> \n"
         for value in findings:
-            if value == 'malware':
-                malware = findings['malware']
-                dataMalw = "Malware found: "+str(malware)
+            if(value == "malware"): 
+                summaryMessage += "<b>Malware:</b> <strong style='color:Blue;'>"+str(findings["malware"])+"</strong>\n"
+                malware = findings["malware"]
+            else: 
+                malware=0
 
-        message = dataVuln+dataMalw
+        if(findings["vulnerabilities"]["total"]):
+            auxValue = findings["vulnerabilities"]["total"]
+            summaryMessage += "<b>Vulnerabilities:</b>\n"+"<b>Critical: </b><strong style='color:red;'>"+str(auxValue["critical"])+"</strong>\n"+"<b>High: </b><strong style='color:red;'>"+str(auxValue["high"])+"</strong>\n"+"<b>Medium: </b><strong style='color:orange;'>"+str(auxValue["medium"])+"</strong>\n"+"<b>Low: </b><strong style='color:#cccc00;'>"+str(auxValue["low"])+"</strong>\n"+"<b>Negligible: </b>"+str(auxValue["negligible"])+"\n"+"<b>Unknow: </b>"+str(auxValue["unknown"])
+        
+        findings = scan["details"]['results']
+        completeMessage=""
+        
+        for find in findings:
+            print("FIND")
+            vulnerabilities = find["findings"]['vulnerabilities']
+            print(find["findings"]['vulnerabilities'])
+
+            dataVuln = "Vulnerabilities found: \n"
+            dataMalw = ""
+
+            for value in vulnerabilities['total']:
+                if value == 'defcon1':
+                    defcon1 = vulnerabilities['total']['defcon1']
+                    dataVuln = dataVuln+"<b>Defcon1:</b> <strong style='color:red;'>"+str(defcon1)+"</strong>\n"
+                if value == 'critical':
+                    critical = vulnerabilities['total']['critical']
+                    dataVuln = dataVuln+"<b>Critical:</b> <strong style='color:red;'>"+str(critical)+"</strong>\n"
+                if value == 'high':
+                    high = vulnerabilities['total']['high']
+                    dataVuln = dataVuln+"<b>High:</b> <strong style='color:red;'>"+str(high)+"</strong>\n"
+                if value == 'medium':
+                    medium = vulnerabilities['total']['medium']
+                    dataVuln = dataVuln+"<b>Medium:</b> <strong style='color:orange;'>"+str(medium)+"</strong>\n"
+                if value == 'low':
+                    low = vulnerabilities['total']['low']
+                    dataVuln = dataVuln+"<b>Low:</b> <strong style='color:#cccc00;'>"+str(low)+"</strong>\n"
+                if value == 'negligible':
+                    negligible = vulnerabilities['total']['negligible']
+                    dataVuln = dataVuln+"<b>Negligible:</b> <strong style='color:gray;'>"+str(negligible)+"</strong>\n"
+                if value == 'unknown':
+                    unknown = vulnerabilities['total']['unknown']
+                    dataVuln = dataVuln+"<b>Unknown:</b> <strong style='color:gray;'>"+str(unknown)+"</strong>\n"
+
+            if dataVuln == "<b>Vulnerabilities found:</b> \n": dataVuln=""
+
+            print("len")
+            print(len(dataVuln))
+
+            if(len(dataVuln)<1):
+                message=""
+            else:
+                message ="\n<b>Layer ID:</b>"+find["id"]+"\n"+dataVuln+dataMalw
+            detailsFinfings = scan["details"]['results']
+            completeMessage+=message
+            print("***********************COMPLETE FINDINGS**********************************")
+            print(completeMessage)
+            print("**************************************************************************")
+        
+        if (malware >= 1):
+            print("clean")
+            sys.stdout.write('1')
+            message = "Image is clean and ready to be deployed!"    
+                
+        data = {
+            "title": "!!! Trend Micro - Smart Check Scan results !!!",
+            "text": "<pre>\n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+summaryMessage+"\nMore Information: "+hostname+scan["href"]
+        }
+
+        url = webhook_teams
+        headers = {'Content-Type': 'application/json'}
+        try:
+            response = requests.request("POST", url, json=data, headers=headers)
+        except requests.exceptions.RequestException as e:
+            print (e)
+            sys.exit(1)
             
-        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+message+"</pre>"}
-
+    else:
+        data = {"text": "<pre>!!! Trend Micro - Smart Check Scan results !!! \n"+"<br><b>Image: "+name+':'+ref["tag"]+"</b>\n"+scan['status']+"</pre>"}
         url = webhook_teams
         headers = {'Content-Type': 'application/json'}
 
         try:
             response = requests.request("POST", url, json=data, headers=headers)
-            print(response)
         except requests.exceptions.RequestException as e:
             print (e)
             sys.exit(1)
+       
 
 def main():
     """Mainline"""

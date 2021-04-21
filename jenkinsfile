@@ -1,48 +1,43 @@
 pipeline {
+
   agent any
-    stages {
-      stage('Checkout') {
-        steps {
-          git 'https://github.com/XeniaP/scExample.git'
-        }
+
+  stages {
+
+    stage('Checkout Source') {
+      steps {
+        git url:'https://github.com/vamsijakkula/hellowhale.git', branch:'master'
       }
-      stage('Docker build') {
-        steps {
-          script {
-            docker.build('tm-demo:latest')
-          }
+    }
+    
+      stage("Build image") {
+            steps {
+                script {
+                    myapp = docker.build("vamsijakkula/hellowhale:${env.BUILD_ID}")
+                }
+            }
         }
-      }
-      stage('ECR push') {
-        steps {
-          script {
-            docker.withRegistry('registry_host'+'/tm-demo', 'ecr:us-east-1:ecr_id') {
-            docker.image('tm-demo:latest').push()}
-          }
+    
+      stage("Push image") {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
+                    }
+                }
+            }
         }
-      }
-      stage('Scan') {
-        steps {
-        withCredentials([
-          [$class: 'AmazonWebServicesCredentialsBinding',
-          accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-          credentialsId: 'ecr_id',
-          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-              smartcheckScan([
-                  imageName: 'registry_host'+"/tm-demo:latest",
-                  smartcheckHost: "SMARTCHECK_HOST",
-                  smartcheckCredentialsId: "dssc_id",
-                  insecureSkipTLSVerify: true,
-                  imagePullAuth: new groovy.json.JsonBuilder([
-                  aws: [
-                    "region":"us-east-1",
-                    "accessKeyID": AWS_ACCESS_KEY_ID,
-                    "secretAccessKey": AWS_SECRET_ACCESS_KEY
-                  ]
-                  ]).toString(),
-              ])
-          }
+
+    
+    stage('Deploy App') {
+      steps {
+        script {
+          kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "mykubeconfig")
         }
       }
     }
+
+  }
+
 }
