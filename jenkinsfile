@@ -1,29 +1,48 @@
 pipeline {
-agent any
- stages {
-   stage('Smartcheck') {
-       steps {
-         script {
-           $FLAG = sh([ script: 'python scAPI.py', returnStdout: true ]).trim()
-           if ($FLAG == '1') {
-             sh 'docker tag test/keyfinding 786395520305.dkr.ecr.us-west-2.amazonaws.com/test/keyfinding'
-             docker.withRegistry('https://786395520305.dkr.ecr.us-west-2.amazonws.com', 'ecr:us-west-2:xenia-ecr') {
-               docker.image('786395520305.dkr.ecr.us-west-2.amazonaws.com/test/keyfinding').push(env.IMAGETAG+'-'+env.BUILD_ID) }
-             }
-               sh 'docker rmi $(docker images -q) -f 2> /dev/null'
-             }
-
-           }
-         }
-       }
-       environment {
-         IMAGETAG = 'tomcat'
-         HIGH = '1'
-         MEDIUM = '5'
-         LOW = '5'
-         NEGLIGIBLE = '5'
-         UNKNOWN = '5'
-         USER = 'administrator'
-         PASSWORD = 'Trendmicr0!'
-       }
-     }
+  agent any
+    stages {
+      stage('Checkout') {
+        steps {
+          git 'https://github.com/XeniaP/scExample.git'
+        }
+      }
+      stage('Docker build') {
+        steps {
+          script {
+            docker.build('tm-demo:latest')
+          }
+        }
+      }
+      stage('ECR push') {
+        steps {
+          script {
+            docker.withRegistry('registry_host'+'/tm-demo', 'ecr:us-east-1:ecr_id') {
+            docker.image('tm-demo:latest').push()}
+          }
+        }
+      }
+      stage('Scan') {
+        steps {
+        withCredentials([
+          [$class: 'AmazonWebServicesCredentialsBinding',
+          accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+          credentialsId: 'ecr_id',
+          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+              smartcheckScan([
+                  imageName: 'registry_host'+"/tm-demo:latest",
+                  smartcheckHost: "SMARTCHECK_HOST",
+                  smartcheckCredentialsId: "dssc_id",
+                  insecureSkipTLSVerify: true,
+                  imagePullAuth: new groovy.json.JsonBuilder([
+                  aws: [
+                    "region":"us-east-1",
+                    "accessKeyID": AWS_ACCESS_KEY_ID,
+                    "secretAccessKey": AWS_SECRET_ACCESS_KEY
+                  ]
+                  ]).toString(),
+              ])
+          }
+        }
+      }
+    }
+}

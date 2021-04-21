@@ -16,10 +16,15 @@ negligible_t=os.environ.get("NEGLIGIBLE")
 unknown_t=os.environ.get("UNKNOWN")
 user=os.environ.get("USER")
 password=os.environ.get("PASSWORD")
+registry= os.environ.get("REGISTRY")
+repository =  os.environ.get("REPO")
 
-smartCheckLB = ""
-userSC = "Administrator"
-passSC = "93Xeniat."
+aws_access_key = os.environ.get("AWS_KEY")
+aws_secret_key = os.environ.get("AWS_SECRET")
+
+smartCheckLB = os.environ.get("SC_HOSTNAME")
+userSC = os.environ.get("USER")
+passSC = os.environ.get("PASSWORD")
 
 def requestToken():
     requests.packages.urllib3.disable_warnings()
@@ -27,7 +32,7 @@ def requestToken():
 
     url = "https://"+smartCheckLB+"/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01' }
-    data = {'user': {'userID': "administrator", 'password': "93Xeniat." }}
+    data = {'user': {'userID': userSC, 'password': passSC }}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
@@ -44,7 +49,7 @@ def listSessions():
 
     url = "https://"+smartCheckLB+"/api/sessions"
     headers = {'Content-Type': 'application/json', 'X-API-Version': '2018-05-01' }
-    data = {'user': {'userID': "administrator", 'password': "93Xeniat." },'expand': 'all', 'limit':'25'}
+    data = {'user': {'userID': userSC, 'password': passSC },'expand': 'all', 'limit':'25'}
 
     try:
         response = requests.request("POST", url, json=data, headers=headers, verify=False)
@@ -59,8 +64,8 @@ def requestScan():
     url = "https://"+smartCheckLB+"/api/scans"
     data = {"source": {
         "type": "docker",
-        "registry": "",
-        "repository": "test/apachestruts",
+        "registry": registry,
+        "repository": repository+imagetag,
         "tag": 'latest',
         "credentials": {"aws": {"region": "us-east-2"}}},
         "webhooks": [{
@@ -186,6 +191,6 @@ def requestReport():
 
     data = {"text": "!!! Scan results !!! \n"+"Image: "+imagetag+'-'+buildid+"\n"+message}
 
-    sendToSlack(message)
+    sendToSlack(message, data) 
 
-listSessions()
+requestReport()
