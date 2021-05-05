@@ -1,3 +1,0 @@
-requests
-docker-image-py
-curlify
