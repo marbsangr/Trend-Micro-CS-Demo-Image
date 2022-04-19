@@ -3,13 +3,13 @@ pipeline {
   stages {
     stage('Checkout Source') {
       steps {
-        git url:'', branch:'master'
+        git url:'https://github.com/XeniaP/Trend-Micro-Smart-Check-Demo-Image.git', branch:'master'
       }
     }
     stage("Build image") {
         steps {
             script {
-                myapp = docker.build("vamsijakkula/hellowhale:${env.BUILD_ID}")
+                demo-app = docker.build("demo-env/demo-app:${env.BUILD_ID}")
             }
         }
     }
@@ -22,13 +22,6 @@ pipeline {
                 }
             }
         }
-    }
-    stage('Deploy App') {
-      steps {
-        script {
-          kubernetesDeploy(configs: "hellowhale.yml", kubeconfigId: "mykubeconfig")
-        }
-      }
     }
   }
 }
