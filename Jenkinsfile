@@ -1,4 +1,5 @@
 pipeline {
+  agent any
   node {  
     stage ('Checkout') {
       git 'https://github.com/XeniaP/Trend-Micro-Smart-Check-Demo-Image.git'  
