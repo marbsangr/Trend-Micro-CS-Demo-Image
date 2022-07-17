@@ -13,8 +13,9 @@ pipeline {
     }
     stage ('Docker push'){
       steps {
-        sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 846753579733.dkr.ecr.us-east-1.amazonaws.com'
-        sh 'docker push 846753579733.dkr.ecr.us-east-1.amazonaws.com/tm-demo:latest'
+        docker.withRegistry('https://846753579733.dkr.ecr.us-east-1.amazonaws.com/tm-demo', 'ecr:us-east-1:ECR') {    
+          docker.image('demo-app').push('latest')
+        }
       }
     } 
     stage ('Deep Security Smart Check scan'){
