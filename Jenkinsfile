@@ -28,7 +28,7 @@ pipeline {
         ]){
             smartcheckScan([
                 imageName: "846753579733.dkr.ecr.us-east-1.amazonaws.com/tm-demo",
-                smartcheckHost: "smartcheck.example.com",
+                smartcheckHost: "ec2-54-159-74-184.compute-1.amazonaws.com:31820",
                 smartcheckCredentialsId: "smartcheck-auth",
                 imagePullAuth: new groovy.json.JsonBuilder([
                     username: REGISTRY_USER,
