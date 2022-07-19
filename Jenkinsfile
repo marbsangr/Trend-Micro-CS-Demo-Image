@@ -9,6 +9,7 @@ pipeline {
     stage ('Docker build'){  
       steps {
         sh 'docker build -t 846753579733.dkr.ecr.us-east-1.amazonaws.com/tm-demo:latest .'
+        sh 'docker build -t 846753579733.dkr.ecr.us-east-1.amazonaws.com/tm-demo:latest .'
       }
     }
     stage ('Docker push'){
