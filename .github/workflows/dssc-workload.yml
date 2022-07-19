@@ -23,6 +23,6 @@ jobs:
             DSSC_SMARTCHECK_PASSWORD: ${{ secrets.DSSC_SMARTCHECK_PASSWORD }}
             # You will need to generate an access key and secret for your AWS user
             DSSC_IMAGE_PULL_AUTH: '{"aws":{"region":"us-east-1","accessKeyID":"${{ secrets.ACCESS_KEY }}","secretAccessKey":"${{ secrets.SECRET_KEY }}"}}'
-            DSSC_FINDINGS_THRESHOLD: '{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}'
+            #DSSC_FINDINGS_THRESHOLD: '{"malware": 100, "vulnerabilities": { "defcon1": 100, "critical": 100, "high": 100 }, "contents": { "defcon1": 100, "critical": 100, "high": 100 }, "checklists": { "defcon1": 100, "critical": 100, "high": 100 }}'
             DSSC_INSECURE_SKIP_TLS_VERIFY: true
             DSSC_INSECURE_SKIP_REGISTRY_TLS_VERIFY: true
