@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 from __future__ import print_function
 
 import argparse
@@ -209,7 +208,7 @@ def sendToTeams(webhook_teams, scan, ref, hostname, name):
                         "type": "Column",
                         "items": [
                             {"type": "Container", "backgroundImage": "https://messagecardplayground.azurewebsites.net/assets/TxP_Background.png","items": [{ "type": "Image", "horizontalAlignment": "Center", "url": "https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png", "altText": "Docker", "isVisible": false, "width": "80px"}],"bleed": true},
-                            {"type": "Container","spacing": "none","style": "emphasis","items": [{"type": "TextBlock", "size": "extraLarge","weight": "lighter","color": "accent","text": "Image Name: {}"format(name+":"+ref["tag"]), "wrap": true}],"bleed": true,"height": "stretch"}
+                            {"type": "Container","spacing": "none","style": "emphasis","items": [{"type": "TextBlock", "size": "extraLarge","weight": "lighter","color": "accent","text": "Image Name: {}".format(name+":"+ref["tag"]), "wrap": true}],"bleed": true,"height": "stretch"}
                         ],
                         "width": 45,"height": "stretch"
                         },
@@ -264,33 +263,27 @@ def main():
         description='Start a scan',
     )
 
-    parser.add_argument('--smartcheck-host', action='store',
+    parser.add_argument('--dssc-host', action='store',
                         default=os.environ.get('DSSC_SMARTCHECK_HOST', None),
                         help='The hostname of the Deep Security Smart Check deployment. Example: smartcheck.example.com')
-    parser.add_argument('--smartcheck-user', action='store',
+    parser.add_argument('--dssc-user', action='store',
                         default=os.environ.get('DSSC_SMARTCHECK_USER', None),
                         help='The userid for connecting to Deep Security Smart Check')
-    parser.add_argument('--smartcheck-password', action='store',
+    parser.add_argument('--dssc-password', action='store',
                         default=os.environ.get(
                             'DSSC_SMARTCHECK_PASSWORD', None),
                         help='The password for connecting to Deep Security Smart Check')
-    parser.add_argument('--insecure-skip-tls-verify', action='store_true',
+    parser.add_argument('--skip-tls-verify', action='store_true',
                         default=os.environ.get(
                             'DSSC_INSECURE_SKIP_TLS_VERIFY', False),
                         help='Ignore certificate errors when connecting to Deep Security Smart Check')
     parser.add_argument('--image-pull-auth', action='store',
                         default=os.environ.get('DSSC_IMAGE_PULL_AUTH', None),
                         help='A JSON object of credentials for authenticating with the registry to pull the image from')
-    parser.add_argument('--registry-root-cas', action='store',
-                        default=os.environ.get('DSSC_REGISTRY_ROOT_CAS', None),
-                        help='A file containing the root CAs (in PEM format) to trust when connecting to the registry')
-    parser.add_argument('--insecure-skip-registry-tls-verify', action='store_true',
+    parser.add_argument('--skip-registry-tls-verify', action='store_true',
                         default=os.environ.get(
                             'DSSC_INSECURE_SKIP_REGISTRY_TLS_VERIFY', False),
                         help='Ignore certificate errors from the image registry')
-    parser.add_argument('--no-wait', action='store_false',
-                        default=os.environ.get('DSSC_NO_WAIT', True),
-                        help='Exit after requesting the scan')
     parser.add_argument('--webhook-teams', action='store',
                         default=os.environ.get('DSSC_SMARTCHECK_WEBHOOK_TEAMS', None),
                         help='WebHook Teams Ds Smartcheck')
@@ -299,31 +292,29 @@ def main():
 
     args = parser.parse_args()
 
-    if args.smartcheck_host is None:
-        eprint('smartcheck_host is required')
+    if args.dssc_host is None:
+        eprint('dssc_host is required')
         sys.exit(1)
 
-    if args.insecure_skip_tls_verify:
+    if args.skip_tls_verify:
         import urllib3
         urllib3.disable_warnings()
 
-    if not args.smartcheck_host.startswith('http'):
-        args.smartcheck_host = 'https://' + args.smartcheck_host
+    if not args.dssc_host.startswith('http'):
+        args.dssc_host = 'https://' + args.dssc_host
 
     with get_session(
-        base=args.smartcheck_host,
-        user=args.smartcheck_user,
-        password=args.smartcheck_password,
-        verify=(not args.insecure_skip_tls_verify),
+        base=args.dssc_host,
+        user=args.dssc_user,
+        password=args.dssc_password,
+        verify=(not args.skip_tls_verify),
     ) as session:
         start_scan(
             session,
             args.image,
             image_pull_auth=args.image_pull_auth,
-            registry_root_cas=args.registry_root_cas,
-            insecure_skip_registry_tls_verify=args.insecure_skip_registry_tls_verify,
-            webhook_teams=args.webhook_teams,
-            wait=args.no_wait,
+            insecure_skip_registry_tls_verify=args.skip_registry_tls_verify,
+            webhook_teams=args.webhook_teams
         )
 
 
