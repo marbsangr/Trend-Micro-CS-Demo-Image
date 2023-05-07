@@ -25,7 +25,7 @@ jobs:
         - name: Build, tag, and push image to Amazon ECR
           env:
             ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            ECR_REPOSITORY: tm-demo
+            ECR_REPOSITORY: oc_registry
             IMAGE_TAG: latest
           run: |
             docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -39,7 +39,7 @@ jobs:
           # Be sure to specify the latest version of smartcheck-scan-action
           uses: deep-security/smartcheck-scan-action@v1.1.0
           with:
-            DSSC_IMAGE_NAME: 846753579733.dkr.ecr.us-east-1.amazonaws.com/tm-demo:latest
+            DSSC_IMAGE_NAME: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
             DSSC_SMARTCHECK_HOST: ${{ secrets.DSSC_SMARTCHECK_HOST }}
             DSSC_SMARTCHECK_USER: ${{ secrets.DSSC_SMARTCHECK_USER }}
             DSSC_SMARTCHECK_PASSWORD: ${{ secrets.DSSC_SMARTCHECK_PASSWORD }}
