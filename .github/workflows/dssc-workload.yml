@@ -5,31 +5,28 @@ on:
     branches: 
       - master
 jobs:
-    docker:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Check out code
-          uses: actions/checkout@v2
-
-        - name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{ secrets.ACCESS_KEY }}
-            aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-            aws-region: us-east-1
-
-        - name: Login to Amazon ECR
-          id: login-ecr
-          uses: aws-actions/amazon-ecr-login@v1
-
-        - name: Build, tag, and push image to Amazon ECR
-          env:
-            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            ECR_REPOSITORY: oc_registry
-            IMAGE_TAG: latest
-          run: |
-            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    #docker:
+    #  runs-on: ubuntu-latest
+    #  steps:
+    #    - name: Check out code
+    #      uses: actions/checkout@v2
+    #    - name: Configure AWS credentials
+    #      uses: aws-actions/configure-aws-credentials@v1
+    #      with:
+    #        aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+    #        aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+    #        aws-region: us-east-1
+    #    - name: Login to Amazon ECR
+    #      id: login-ecr
+    #      uses: aws-actions/amazon-ecr-login@v1
+    #    - name: Build, tag, and push image to Amazon ECR
+    #      env:
+    #        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    #        ECR_REPOSITORY: oc_registry
+    #        IMAGE_TAG: latest
+    #      run: |
+    #        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+    #        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     SmartCheck-Scan-Action:
        runs-on: ubuntu-latest
        environment: DockerRegistry
@@ -39,7 +36,7 @@ jobs:
           # Be sure to specify the latest version of smartcheck-scan-action
           uses: deep-security/smartcheck-scan-action@v1.1.0
           with:
-            DSSC_IMAGE_NAME: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            DSSC_IMAGE_NAME: 904737956763.dkr.ecr.us-east-1.amazonaws.com/oc_registry:java-goof
             DSSC_SMARTCHECK_HOST: ${{ secrets.DSSC_SMARTCHECK_HOST }}
             DSSC_SMARTCHECK_USER: ${{ secrets.DSSC_SMARTCHECK_USER }}
             DSSC_SMARTCHECK_PASSWORD: ${{ secrets.DSSC_SMARTCHECK_PASSWORD }}
