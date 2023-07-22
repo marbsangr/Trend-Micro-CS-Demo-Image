@@ -27,22 +27,55 @@ jobs:
     #      run: |
     #        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
     #        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    SmartCheck-Scan-Action:
-       runs-on: ubuntu-latest
-       environment: DockerRegistry
-       steps:
-       # AWS Example:
-        - name: Deep Security Smart Check Scan ECR
-          # Be sure to specify the latest version of smartcheck-scan-action
-          uses: deep-security/smartcheck-scan-action@v1.1.0
+    #SmartCheck-Scan-Action:
+    #   runs-on: ubuntu-latest
+    #   environment: DockerRegistry
+    #   steps:
+    #   # AWS Example:
+    #    - name: Deep Security Smart Check Scan ECR
+    #      # Be sure to specify the latest version of smartcheck-scan-action
+    #      uses: deep-security/smartcheck-scan-action@v1.1.0
+    #      with:
+    #        DSSC_IMAGE_NAME: 904737956763.dkr.ecr.us-east-1.amazonaws.com/oc_registry:java-goof
+    #        DSSC_SMARTCHECK_HOST: ${{ secrets.DSSC_SMARTCHECK_HOST }}
+    #        DSSC_SMARTCHECK_USER: ${{ secrets.DSSC_SMARTCHECK_USER }}
+    #        DSSC_SMARTCHECK_PASSWORD: ${{ secrets.DSSC_SMARTCHECK_PASSWORD }}
+    #        # You will need to generate an access key and secret for your AWS user
+    #        DSSC_IMAGE_PULL_AUTH: '{"aws":{"region":"us-east-1","accessKeyID":"${{ secrets.ACCESS_KEY }}","secretAccessKey":"${{ secrets.SECRET_KEY }}"}}'
+    #        DSSC_FINDINGS_THRESHOLD: '{"malware": 1, "vulnerabilities": { "defcon1": 1, "critical": 42, "high": 128, "medium": 106, "low":5}, "contents": { "defcon1": 1, "critical": 11, "high": 3, "medium":1 }, "checklists": { "defcon1": 1, "critical": 11, "high": 3, "medium":1 }}'
+    #        #DSSC_FINDINGS_THRESHOLD: '{"malware": 10, "vulnerabilities": { "defcon1": 10, "critical": 100, "high": 200, "medium": 200, "low":200}, "contents": { "defcon1": 10, "critical": 50, "high": 100, "medium":100 }, "checklists": { "defcon1": 10, "critical": 500, "high": 100, "medium":100 }}'
+    #        DSSC_INSECURE_SKIP_TLS_VERIFY: true
+    #        DSSC_INSECURE_SKIP_REGISTRY_TLS_VERIFY: true
+    ArtifactScanner:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check out code
+          uses: actions/checkout@v2
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v1
           with:
-            DSSC_IMAGE_NAME: 904737956763.dkr.ecr.us-east-1.amazonaws.com/oc_registry:java-goof
-            DSSC_SMARTCHECK_HOST: ${{ secrets.DSSC_SMARTCHECK_HOST }}
-            DSSC_SMARTCHECK_USER: ${{ secrets.DSSC_SMARTCHECK_USER }}
-            DSSC_SMARTCHECK_PASSWORD: ${{ secrets.DSSC_SMARTCHECK_PASSWORD }}
-            # You will need to generate an access key and secret for your AWS user
-            DSSC_IMAGE_PULL_AUTH: '{"aws":{"region":"us-east-1","accessKeyID":"${{ secrets.ACCESS_KEY }}","secretAccessKey":"${{ secrets.SECRET_KEY }}"}}'
-            DSSC_FINDINGS_THRESHOLD: '{"malware": 1, "vulnerabilities": { "defcon1": 1, "critical": 42, "high": 128, "medium": 106, "low":5}, "contents": { "defcon1": 1, "critical": 11, "high": 3, "medium":1 }, "checklists": { "defcon1": 1, "critical": 11, "high": 3, "medium":1 }}'
-            #DSSC_FINDINGS_THRESHOLD: '{"malware": 10, "vulnerabilities": { "defcon1": 10, "critical": 100, "high": 200, "medium": 200, "low":200}, "contents": { "defcon1": 10, "critical": 50, "high": 100, "medium":100 }, "checklists": { "defcon1": 10, "critical": 500, "high": 100, "medium":100 }}'
-            DSSC_INSECURE_SKIP_TLS_VERIFY: true
-            DSSC_INSECURE_SKIP_REGISTRY_TLS_VERIFY: true
+            aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+            aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+            aws-region: us-east-1
+        - name: Login to Amazon ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v1
+        - name: Trend Cloud One Container Security Scan Action
+          uses: trendmicro/cloudone-container-security-github-action@version*
+          with:
+              # Mandatory
+              CLOUD_ONE_API_KEY: ${{ secrets.API_KEY }}
+              REGION: us-1
+              # Optional
+              SBOM: true # Saves SBOM to SBOM.json so you can export it as an artifact later.
+              IMAGE: alpine # The image need to be public or the pipeline need to have access to the private image of choice.
+              LOCAL_IMAGE_TARBALL: image.tar
+              # For each threshold below, select the maximum number of vulnerabilities that are acceptable.
+              MAX_TOTAL: 0
+              MAX_CRITICAL: 0
+              MAX_HIGH: 0
+              MAX_MEDIUM: 0
+              MAX_LOW: 0
+              MAX_NEGLIGIBLE: 0
+              MAX_UNKNOWN: 0
+              SCAN_RESULT_ARTIFACT: result.json # Save as an artifact in GitHub to be able to keep the result of the scan.
