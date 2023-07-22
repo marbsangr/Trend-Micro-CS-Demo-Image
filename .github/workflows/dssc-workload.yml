@@ -61,7 +61,7 @@ jobs:
           id: login-ecr
           uses: aws-actions/amazon-ecr-login@v1
         - name: Trend Cloud One Container Security Scan Action
-          uses: trendmicro/cloudone-container-security-github-action@version*
+          uses: trendmicro/cloudone-container-security-github-action@1.0.8
           with:
               # Mandatory
               CLOUD_ONE_API_KEY: ${{ secrets.API_KEY }}
