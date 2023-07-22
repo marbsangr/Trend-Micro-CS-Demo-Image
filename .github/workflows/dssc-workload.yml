@@ -47,6 +47,7 @@ jobs:
     #        DSSC_INSECURE_SKIP_REGISTRY_TLS_VERIFY: true
     ArtifactScanner:
       runs-on: ubuntu-latest
+      environment: DockerRegistry
       steps:
         - name: Trend Cloud One Container Security Scan Action
           uses: trendmicro/cloudone-container-security-github-action@1.0.8
