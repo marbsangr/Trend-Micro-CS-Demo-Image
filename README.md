@@ -1,5 +1,7 @@
 # Trend Micro Smart Check Demo Image Example
 
+[![Deep Security Smart Check](https://github.com/XeniaP/Trend-Micro-Smart-Check-Demo-Image/actions/workflows/dssc-workload.yml/badge.svg)](https://github.com/XeniaP/Trend-Micro-Smart-Check-Demo-Image/actions/workflows/dssc-workload.yml)
+
 This is a Docker Image used Only for Demostration - NOT USE IN PRODUCTION ENVIRONMENT
 
 The main objective is to demonstrate the detection of Vulnerabilities, Malware and Some additional elements within a Pipeline.
