@@ -52,28 +52,28 @@ jobs:
       runs-on: ubuntu-latest
       environment: DockerRegistry
       steps:
-        - name: Git clone the repository
-          uses: actions/checkout@v3
-        - name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@v2.2.0
-          with:
-            role-to-assume: ${{ secrets.XAR }}
-            role-session-name: GitHub_to_AWS_via_FederatedOIDC
-            aws-region: ${{ secrets.REGION }}
-        - name: Sts GetCallerIdentity
-          run: |
-            aws sts get-caller-identity
-        - name: Login to Amazon ECR
-          id: login-ecr
-          uses: aws-actions/amazon-ecr-login@v1
-        - name: Build, tag, and push image to Amazon ECR
-          env:
-            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            ECR_REPOSITORY: oc_registry
-            IMAGE_TAG: latest
-          run: |
-            docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        #- name: Git clone the repository
+        #  uses: actions/checkout@v3
+        #- name: Configure AWS credentials
+        #  uses: aws-actions/configure-aws-credentials@v2.2.0
+        #  with:
+        #    role-to-assume: ${{ secrets.XAR }}
+        #    role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        #    aws-region: ${{ secrets.REGION }}
+        #- name: Sts GetCallerIdentity
+        #  run: |
+        #    aws sts get-caller-identity
+        #- name: Login to Amazon ECR
+        #  id: login-ecr
+        #  uses: aws-actions/amazon-ecr-login@v1
+        #- name: Build, tag, and push image to Amazon ECR
+        #  env:
+        #    ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        #    ECR_REPOSITORY: oc_registry
+        #    IMAGE_TAG: latest
+        #  run: |
+        #    docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        #    docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         - name: Trend Cloud One Container Security Scan Action
           uses: trendmicro/cloudone-container-security-github-action@1.0.8
           with:
@@ -82,7 +82,7 @@ jobs:
               REGION: us-1
               # Optional
               SBOM: true # Saves SBOM to SBOM.json so you can export it as an artifact later.
-              IMAGE: alpine # The image need to be public or the pipeline need to have access to the private image of choice.
+              IMAGE: xniapdev/django-app:45 # The image need to be public or the pipeline need to have access to the private image of choice.
               LOCAL_IMAGE_TARBALL: image.tar
               # For each threshold below, select the maximum number of vulnerabilities that are acceptable.
               #MAX_TOTAL: 0
