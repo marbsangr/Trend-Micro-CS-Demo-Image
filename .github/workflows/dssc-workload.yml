@@ -74,6 +74,7 @@ jobs:
           with:
             push: true
             tags: xniapdev/django-app:45
+          - name: 'Upload Scan Result Artifact'
         #- name: Sts GetCallerIdentity
         #  run: |
         #    aws sts get-caller-identity
@@ -106,3 +107,14 @@ jobs:
               #MAX_NEGLIGIBLE: 0
               #MAX_UNKNOWN: 0
               SCAN_RESULT_ARTIFACT: result.json # Save as an artifact in GitHub to be able to keep the result of the scan.
+        - uses: actions/upload-artifact@v3
+          with:
+            name: scan-result
+            path: result.json
+            retention-days: 30
+        - name: 'Upload SBOM Artifact'
+          uses: actions/upload-artifact@v3
+          with:
+            name: sbom
+            path: SBOM.json
+            retention-days: 30
