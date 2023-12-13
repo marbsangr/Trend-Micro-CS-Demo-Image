@@ -11,7 +11,7 @@ resources:
 variables:
   imageName: 'xniapdev/django-app'
   tag: '$(Build.BuildId)'
-  TMAS_API_KEY: '$(v1apikey)'
+  apikey: '$(v1apikey)'
 
 stages:
 - stage: Build
@@ -25,7 +25,7 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'dockerhub'
-        repository: 'xniapdev/django-app'
+        repository: $(imageName)
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
 - stage: Scan
@@ -52,7 +52,11 @@ stages:
       - task: Bash@3
         inputs:
           targetType: 'inline'
-          script: echo $MYSECRET
+          script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM >> result.json
         env:
-          TMAS_API_KEY: $(TMAS_API_KEY)
+          TMAS_API_KEY: $(apikey)
+
+      - publish: '$(Build.ArtifactStagingDirectory)/*.json'
+        displayName: 'Publish results'
+        artifact: drop
       
