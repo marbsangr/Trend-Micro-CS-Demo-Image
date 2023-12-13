@@ -31,7 +31,7 @@ stages:
 - stage: Trend Micro Artifact Scanner
   displayName: Trend Micro Artifact Scanner
   jobs:
-    - job: Image Scan
+    - job: Image_Scan
       displayName: Image Scan
       pool:
         vmImage: ubuntu-latest
