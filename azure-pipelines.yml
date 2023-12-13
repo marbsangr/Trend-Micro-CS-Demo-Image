@@ -35,6 +35,8 @@ stages:
       displayName: Image Scan
       pool:
         vmImage: ubuntu-latest
+      variables:
+        TMAS_API_KEY: ${{ variables.v1apikey }}
       steps:
       - script: |
           tar --version
@@ -49,5 +51,5 @@ stages:
       - script: |
           ls -la tmas-cli
           echo $(imageName):$(tag)
-          export TMAS_API_KEY=${{ variables.v1apikey }}
+          echo $(TMAS_API_KEY)
           ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM
