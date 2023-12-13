@@ -11,6 +11,7 @@ resources:
 variables:
   imageName: 'xniapdev/django-app'
   tag: '$(Build.BuildId)'
+  TMAS_API_KEY: '$(v1apikey)'
 
 stages:
 - stage: Build
@@ -34,8 +35,6 @@ stages:
       displayName: Image Scan
       pool:
         vmImage: ubuntu-latest
-      variables:
-        TMAS_API_KEY: ${{ variables.v1apikey }}
       steps:
       - script: |
           tar --version
@@ -49,6 +48,11 @@ stages:
           overwriteExistingFiles: true
       - script: |
           ls -la tmas-cli
-          echo $(imageName):$(tag)
           echo $(TMAS_API_KEY)
-          ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: echo $MYSECRET
+        env:
+          TMAS_API_KEY: $(TMAS_API_KEY)
+      
