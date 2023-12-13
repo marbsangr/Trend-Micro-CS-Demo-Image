@@ -9,7 +9,7 @@ resources:
 - repo: self
 
 variables:
-  imageName: 'oc_registry'
+  imageName: 'xniapdev/django-app'
   tag: '$(Build.BuildId)'
 
 stages:
@@ -23,8 +23,8 @@ stages:
     steps:
     - task: Docker@2
       inputs:
-        containerRegistry: 'Trendbrregistry'
-        repository: 'v1cs-demo'
+        containerRegistry: 'dockerhub'
+        repository: 'xniapdev/django-app'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
 - stage: Scan
