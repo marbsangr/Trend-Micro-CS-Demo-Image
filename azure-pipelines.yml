@@ -28,7 +28,7 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         buildContext: '$(Build.SourcesDirectory)'
         repository: $(imageName)
-- stage: Trend Micro Artifact Scanner
+- stage: Scan
   displayName: Trend Micro Artifact Scanner
   jobs:
     - job: Image_Scan
