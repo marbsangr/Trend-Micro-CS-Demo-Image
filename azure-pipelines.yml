@@ -22,12 +22,11 @@ stages:
       vmImage: ubuntu-latest
     steps:
     - task: Docker@2
-      displayName: Build an image
       inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        buildContext: '$(Build.SourcesDirectory)'
-        repository: $(imageName)
+        containerRegistry: 'Trendbrregistry'
+        repository: 'v1cs-demo'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
 - stage: Scan
   displayName: Trend Micro Artifact Scanner
   jobs:
