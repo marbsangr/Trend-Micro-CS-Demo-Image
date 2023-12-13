@@ -37,8 +37,9 @@ stages:
         vmImage: ubuntu-latest
       steps:
       - script: |
-          curl -L -o tmas-cli.zip https://cli.artifactscan.cloudone.trendmicro.com/tmas-cli/latest/tmas-cli_Linux_x86_64.tar.gz
-          unzip tmas-cli.zip -d tmas-cli
+          curl -L -o tmas-cli.tar.gz https://cli.artifactscan.cloudone.trendmicro.com/tmas-cli/latest/tmas-cli_Linux_x86_64.tar.gz
+          ls -la
+          tar -xzvf tmas-cli.tar.gz -C tmas-cli/
           chmod +x tmas-cli/tmas
         displayName: Get Latest Version of TMAS
       - script: |
