@@ -52,11 +52,14 @@ stages:
           script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 >> result.json
         env:
           TMAS_API_KEY: $(apikey)
-      - script: |
-          ls -la 
-      - publish: 'SBOM_OciRegistry_django-app_*.json'
-        displayName: 'Publish results'
-        artifact: drop
+
       - publish: 'result.json'
         displayName: 'Publish results'
         artifact: drop
+      
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'FilePath'
+          TargetPath: 'result.json'
