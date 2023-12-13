@@ -12,6 +12,7 @@ variables:
   imageName: 'xniapdev/django-app'
   tag: '$(Build.BuildId)'
   apikey: '$(v1apikey)'
+  nombre-reporte: 'reporte_vulnerabilidades-$(imageName).xlsx'
 
 stages:
 - stage: Build
@@ -59,7 +60,7 @@ stages:
       - task: Bash@3
         inputs:
           targetType: 'inline'
-          script: ./tmas-cli/tmas scan $(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 > result.json
+          script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 > result.json
         env:
           TMAS_API_KEY: $(apikey)
       - task: Bash@3
