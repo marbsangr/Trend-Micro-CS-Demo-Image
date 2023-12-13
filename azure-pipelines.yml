@@ -46,17 +46,15 @@ stages:
           destinationFolder: 'tmas-cli'
           cleanDestinationFolder: true
           overwriteExistingFiles: true
-      - script: |
-          ls -la tmas-cli
-          echo $(TMAS_API_KEY)
       - task: Bash@3
         inputs:
           targetType: 'inline'
-          script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM >> result.json
+          script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 >> result.json
         env:
           TMAS_API_KEY: $(apikey)
-
-      - publish: '$(Build.ArtifactStagingDirectory)/*.json'
+      - script: |
+          ls -la tmas-cli
+      - publish: './tmas-cli/*.json'
         displayName: 'Publish results'
         artifact: drop
       
