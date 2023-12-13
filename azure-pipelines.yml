@@ -51,31 +51,27 @@ stages:
         inputs:
           targetType: 'inline'
           script: pip install pandas
-      #- task: Bash@3
-      #  inputs:
-      #    targetType: 'inline'
-      #    script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 | python ArtifactScannerReport.py $(imageName)
-      #  env:
-      #    TMAS_API_KEY: $(apikey)
       - task: Bash@3
+        displayName: "Scan from Registry to Excel"
+        inputs:
+          targetType: 'inline'
+          script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 | python ArtifactScannerReport.py $(imageName)
+        env:
+          TMAS_API_KEY: $(apikey)
+      - task: Bash@3
+        displayName: "Scan from Registry to Json"
         inputs:
           targetType: 'inline'
           script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 > result.json
         env:
           TMAS_API_KEY: $(apikey)
-      - task: Bash@3
-        inputs:
-          targetType: 'inline'
-          script: python ArtifactScannerReport.py $(imageName) result.json
-
-      - publish: 'result.json'
-        displayName: 'Publish json'
-        artifact: drop
-        
-      - publish: 'reporte_vulnerabilidades-$(imageName).xlsx'
-        displayName: 'Publish Excel'
-        artifact: drop
       
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'FilePath'
+          TargetPath: 'reporte_vulnerabilidades-$(imageName).xlsx'
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
