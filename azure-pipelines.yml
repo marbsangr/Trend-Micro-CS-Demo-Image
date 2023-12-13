@@ -54,9 +54,7 @@ stages:
           script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 > result.json
         env:
           TMAS_API_KEY: $(apikey)
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'drop'
-          publishLocation: 'FilePath'
-          TargetPath: 'result.json'
+      
+      - publish: 'result.json'
+        displayName: 'Publish json'
+        artifact: drop
