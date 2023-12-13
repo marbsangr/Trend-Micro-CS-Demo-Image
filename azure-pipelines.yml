@@ -46,7 +46,8 @@ stages:
           destinationFolder: 'tmas-cli'
           cleanDestinationFolder: true
           overwriteExistingFiles: true
-      
       - script: |
           ls -la tmas-cli
+          echo $(imageName):$(tag)
+          export TMAS_API_KEY=${{ variables.v1apikey }}
           ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM
