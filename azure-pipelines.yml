@@ -28,3 +28,18 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         buildContext: '$(Build.SourcesDirectory)'
         repository: $(imageName)
+- stage: Trend Micro Artifact Scanner
+  displayName: Trend Micro Artifact Scanner
+  jobs:
+    - job: Image Scan
+      displayName: Image Scan
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+      - script: |
+          curl -L -o tmas-cli.zip https://cli.artifactscan.cloudone.trendmicro.com/tmas-cli/latest/tmas-cli_Linux_x86_64.tar.gz
+          unzip tmas-cli.zip -d tmas-cli
+          chmod +x tmas-cli/tmas
+        displayName: Get Latest Version of TMAS
+      - script: |
+          ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM
