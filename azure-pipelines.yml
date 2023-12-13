@@ -38,10 +38,14 @@ stages:
       steps:
       - script: |
           tar --version
-          curl -L -o tmas-cli.tar.gz https://cli.artifactscan.cloudone.trendmicro.com/tmas-cli/latest/tmas-cli_Linux_x86_64.tar.gz
-          sudo tar -xzvf ./tmas-cli.tar.gz -C tmas-cli
-          ls -la
-          chmod +x tmas-cli/tmas
+          curl -L -o tmas-cli.tar.gz https://cli.artifactscan.cloudone.trendmicro.com/tmas-cli/latest/- task: ExtractFiles@1
         displayName: Get Latest Version of TMAS
+      - task: ExtractFiles@1
+        inputs:
+          archiveFilePatterns: '**/tmas-cli_Linux_x86_64.tar.gz'
+          destinationFolder: 'tmas-cli'
+          cleanDestinationFolder: true
+          overwriteExistingFiles: true
+      
       - script: |
           ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM
