@@ -53,8 +53,8 @@ stages:
         env:
           TMAS_API_KEY: $(apikey)
       - script: |
-          ls -la tmas-cli
-      - publish: './tmas-cli/*.json'
+          ls -la 
+      - publish: './*.json'
         displayName: 'Publish results'
         artifact: drop
       
