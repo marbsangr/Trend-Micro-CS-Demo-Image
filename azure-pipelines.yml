@@ -48,4 +48,5 @@ stages:
           overwriteExistingFiles: true
       
       - script: |
+          ls -la 
           ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM
