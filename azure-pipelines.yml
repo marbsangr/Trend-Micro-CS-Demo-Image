@@ -49,14 +49,30 @@ stages:
       - task: Bash@3
         inputs:
           targetType: 'inline'
-          script: |
-            pip install pandas
-            ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 | python ArtifactScannerReport.py $(imageName)
+          script: pip install pandas
+      #- task: Bash@3
+      #  inputs:
+      #    targetType: 'inline'
+      #    script: ./tmas-cli/tmas scan registry:$(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 | python ArtifactScannerReport.py $(imageName)
+      #  env:
+      #    TMAS_API_KEY: $(apikey)
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: ./tmas-cli/tmas scan $(imageName):$(tag) --malwareScan --saveSBOM --platform linux/amd64 > result.json
         env:
           TMAS_API_KEY: $(apikey)
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: python ArtifactScannerReport.py $(imageName) result.json
 
       - publish: 'result.json'
-        displayName: 'Publish results'
+        displayName: 'Publish json'
+        artifact: drop
+        
+      - publish: 'reporte_vulnerabilidades-$(imageName).xlsx'
+        displayName: 'Publish Excel'
         artifact: drop
       
       - task: PublishBuildArtifacts@1
