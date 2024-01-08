@@ -41,6 +41,7 @@ jobs:
     PushImagetoRegistry:
       runs-on: ubuntu-latest
       environment: DockerRegistry
+      needs: [BuildImage]
       steps:
         - name: Login to GitHub Container Registry
           uses: docker/login-action@v3
@@ -58,6 +59,7 @@ jobs:
     TrendMicroArtifactScan:
       runs-on: ubuntu-latest
       environment: DockerRegistry
+      needs: [PushImagetoRegistry]
       steps:
         - name: Trend Cloud One Container Security Scan Action
           uses: trendmicro/cloudone-container-security-github-action@1.0.10
