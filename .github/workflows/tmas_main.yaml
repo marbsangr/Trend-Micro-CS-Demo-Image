@@ -12,7 +12,7 @@ jobs:
 
     steps:   
       - name: Vision One Container Security Scan Action
-        uses: ${{ env.TMAS_VERSION }}
+        uses: trendmicro/tmas-scan-action@1.0.10
         with:
             # Mandatory
             TMAS_API_KEY: ${{ secrets.TMAS_API_KEY }}
