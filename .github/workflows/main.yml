@@ -1,6 +1,6 @@
 - name: Vision One Container Security Scan Action
   uses: ${{ env.TMAS_VERSION }}
-   with:
+  with:
       # Mandatory
       TMAS_API_KEY: ${{ secrets.TMAS_API_KEY }}
       REGION: us-east-1
