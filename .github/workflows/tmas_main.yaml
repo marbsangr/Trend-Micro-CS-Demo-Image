@@ -19,7 +19,7 @@ jobs:
             REGION: us-east-1
 
             # Optional
-            SBOM: true # Saves SBOM to SBOM.json so you can export it as an artifact later.
+            SBOM: true # Saves SBOM to SBOM.json so you can export it as an artifact later
             MALWARE_SCAN: true # Enable malware scan.
             IMAGE: alpine # The image need to be public or the pipeline need to have access to the private image of choice.
             LOCAL_IMAGE_TARBALL: image.tar
